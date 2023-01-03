@@ -27,6 +27,7 @@ import { KUBERNETES_COLLECTION_ICONS_PROPS } from '../helpers';
 import { RESPONSE_ACTION_BUTTON } from './translations';
 import { showBreadcrumbDisplayText } from './helper';
 import { BREADCRUMBS_CLUSTER_TREE_VIEW_LEVELS } from '../translations';
+import { ObservabilityIconButton } from '../../observability_button';
 interface BreadcrumbDeps {
   treeNavSelection: Partial<KubernetesCollectionMap>;
   onSelect: (selection: Partial<KubernetesCollectionMap>) => void;
@@ -161,7 +162,8 @@ export const Breadcrumb = ({
               true
             )}
         </EuiFlexItem>
-        <EuiFlexItem grow={false}>
+        <EuiFlexItem grow={false} css={styles.breadcrumbsWrapper}>
+          <ObservabilityIconButton />
           {responseActionButtonProps?.canAccessResponseConsole && (
             <EuiToolTip content={responseActionButtonProps?.tooltip ?? null}>
               <EuiButtonEmpty
