@@ -155,4 +155,42 @@ export const cspmUsageSchema: MakeSchemaFrom<CspmUsage> = {
       agent_count: { type: 'long' },
     },
   },
+  kspm_accounts_stats: {
+    type: 'array',
+    items: {
+      account_id: { type: 'keyword' },
+      posture_score: { type: 'long' },
+      doc_count: { type: 'long' },
+      benchmark_name: { type: 'keyword' },
+      benchmark_version: { type: 'keyword' },
+      kubernetes_version: { type: 'keyword' },
+      passed_findings_count: { type: 'long' },
+      failed_findings_count: { type: 'long' },
+      agents_count: { type: 'short' },
+      nodes_count: { type: 'short' },
+      pods_count: { type: 'short' },
+      cloud_provider: { type: 'keyword' },
+    },
+  },
+  cspm_accounts_stats: {
+    type: 'array',
+    items: {
+      account_id: { type: 'keyword' },
+      posture_score: { type: 'long' },
+      doc_count: { type: 'long' },
+      benchmark_name: { type: 'keyword' },
+      benchmark_version: { type: 'keyword' },
+      passed_findings_count: { type: 'long' },
+      failed_findings_count: { type: 'long' },
+      cloud_provider: { type: 'keyword' },
+    },
+  },
+  cnvm_accounts_stats: {
+    type: 'array',
+    items: {
+      account_id: { type: 'keyword' },
+      doc_count: { type: 'long' },
+      cloud_provider: { type: 'keyword' },
+    },
+  },
 };

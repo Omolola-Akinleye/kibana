@@ -15,6 +15,9 @@ import { CspmUsage } from './types';
 import { getAccountsStats } from './accounts_stats_collector';
 import { getRulesStats } from './rules_stats_collector';
 import { getInstallationStats } from './installation_stats_collector';
+import { getKspmAccountsStats } from './kspm_stats_collectors';
+import { getCspmAccountsStats } from './cspm_stats_collectors';
+import { getCnvmAccountsStats } from './cnvm_stats_collectors';
 
 export function registerCspmUsageCollector(
   logger: Logger,
@@ -34,24 +37,35 @@ export function registerCspmUsageCollector(
       return true;
     },
     fetch: async (collectorFetchContext: CollectorFetchContext) => {
-      const [indicesStats, accountsStats, resourcesStats, rulesStats, installationStats] =
-        await Promise.all([
-          getIndicesStats(
-            collectorFetchContext.esClient,
-            collectorFetchContext.soClient,
-            coreServices,
-            logger
-          ),
-          getAccountsStats(collectorFetchContext.esClient, logger),
-          getResourcesStats(collectorFetchContext.esClient, logger),
-          getRulesStats(collectorFetchContext.esClient, logger),
-          getInstallationStats(
-            collectorFetchContext.esClient,
-            collectorFetchContext.soClient,
-            coreServices,
-            logger
-          ),
-        ]);
+      const [
+        indicesStats,
+        accountsStats,
+        resourcesStats,
+        rulesStats,
+        installationStats,
+        kspmAccountStats,
+        cspmAccountsStats,
+        cnvmAccountsStats,
+      ] = await Promise.all([
+        getIndicesStats(
+          collectorFetchContext.esClient,
+          collectorFetchContext.soClient,
+          coreServices,
+          logger
+        ),
+        getAccountsStats(collectorFetchContext.esClient, logger),
+        getResourcesStats(collectorFetchContext.esClient, logger),
+        getRulesStats(collectorFetchContext.esClient, logger),
+        getInstallationStats(
+          collectorFetchContext.esClient,
+          collectorFetchContext.soClient,
+          coreServices,
+          logger
+        ),
+        getKspmAccountsStats(collectorFetchContext.esClient, logger),
+        getCspmAccountsStats(collectorFetchContext.esClient, logger),
+        getCnvmAccountsStats(collectorFetchContext.esClient, logger),
+      ]);
 
       return {
         indices: indicesStats,
@@ -59,6 +73,9 @@ export function registerCspmUsageCollector(
         resources_stats: resourcesStats,
         rules_stats: rulesStats,
         installation_stats: installationStats,
+        kspm_accounts_stats: kspmAccountStats,
+        cspm_accounts_stats: cspmAccountsStats,
+        cnvm_accounts_stats: cnvmAccountsStats,
       };
     },
     schema: cspmUsageSchema,
