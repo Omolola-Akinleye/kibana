@@ -12,7 +12,7 @@ import type {
 } from '@elastic/elasticsearch/lib/api/types';
 import { getIdentifierRuntimeMapping } from '../../../../common/runtime_mappings/get_identifier_runtime_mapping';
 import { calculatePostureScore } from '../../../../common/utils/helpers';
-import type { CspmAccountsStats } from './types';
+import type { FindingsAccountsStats } from './types';
 import { LATEST_FINDINGS_INDEX_DEFAULT_NS } from '../../../../common/constants';
 
 interface Value {
@@ -201,13 +201,13 @@ const getAccountsStatsQuery = (): SearchRequest => ({
   _source: false,
 });
 
-const getCspmAccountsStats = (
+const getFindingsAccountsStats = (
   aggregatedResourcesStats: AccountsStats,
   logger: Logger
-): CspmAccountsStats[] => {
+): FindingsAccountsStats[] => {
   const accounts = aggregatedResourcesStats.accounts.buckets;
 
-  const cspmAccountsStats = accounts.map((account) => ({
+  const FindingsAccountsStats = accounts.map((account) => ({
     account_id: account.key,
     latest_findings_doc_count: account.doc_count,
     posture_score: calculatePostureScore(
@@ -226,13 +226,13 @@ const getCspmAccountsStats = (
   }));
   logger.info('CSPM telemetry: accounts stats was sent');
 
-  return cspmAccountsStats;
+  return FindingsAccountsStats;
 };
 
 export const getAccountsStats = async (
   esClient: ElasticsearchClient,
   logger: Logger
-): Promise<CspmAccountsStats[]> => {
+): Promise<FindingsAccountsStats[]> => {
   try {
     const isIndexExists = await esClient.indices.exists({
       index: LATEST_FINDINGS_INDEX_DEFAULT_NS,
@@ -243,11 +243,11 @@ export const getAccountsStats = async (
         getAccountsStatsQuery()
       );
 
-      const cspmAccountsStats = accountsStatsResponse.aggregations
-        ? getCspmAccountsStats(accountsStatsResponse.aggregations, logger)
+      const FindingsAccountsStats = accountsStatsResponse.aggregations
+        ? getFindingsAccountsStats(accountsStatsResponse.aggregations, logger)
         : [];
 
-      return cspmAccountsStats;
+      return FindingsAccountsStats;
     }
 
     return [];

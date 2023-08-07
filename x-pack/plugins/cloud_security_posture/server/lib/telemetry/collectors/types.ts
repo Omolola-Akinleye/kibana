@@ -5,14 +5,18 @@
  * 2.0.
  */
 
+import { AggregationsMultiBucketBase } from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
 import { CspStatusCode } from '../../../../common/types';
 
 export interface CspmUsage {
   indices: CspmIndicesStats;
   resources_stats: CspmResourcesStats[];
-  accounts_stats: CspmAccountsStats[];
+  accounts_stats: FindingsAccountsStats[];
   rules_stats: CspmRulesStats[];
   installation_stats: CloudSecurityInstallationStats[];
+  kspm_accounts_stats: KspmAccountStats[];
+  cspm_accounts_stats: CspmAccountsStats[];
+  cnvm_accounts_stats: CnvmAccountStats[];
 }
 
 export interface PackageSetupStatus {
@@ -33,6 +37,17 @@ export interface CspmIndicesStats {
   vuln_mgmt: PackageSetupStatus;
 }
 
+export interface BenchmarkId {
+  metrics: { 'rule.benchmark.id': string };
+}
+export interface BenchmarkName {
+  metrics: { 'rule.benchmark.name': string };
+}
+
+export interface BenchmarkVersion {
+  metrics: { 'rule.benchmark.version': string };
+}
+
 export interface IndexStats {
   doc_count: number;
   deleted: number;
@@ -49,7 +64,7 @@ export interface CspmResourcesStats {
   passed_findings_count: number;
   failed_findings_count: number;
 }
-export interface CspmAccountsStats {
+export interface FindingsAccountsStats {
   account_id: string;
   posture_score: number;
   latest_findings_doc_count: number;
@@ -63,6 +78,33 @@ export interface CspmAccountsStats {
   nodes_count: number;
   pods_count: number;
 }
+
+export interface CspmAccountsStats {
+  account_id: string;
+  posture_score: number;
+  doc_count: number;
+  benchmark_name: string;
+  benchmark_version: string;
+  passed_findings_count: number;
+  failed_findings_count: number;
+  cloud_provider: string;
+}
+
+export interface CspmAccountsResponse {
+  accounts: {
+    buckets: CspmAccountsEntity[];
+  };
+}
+interface CspmAccountsEntity {
+  key: string; // cluster id
+  doc_count: number; // latest kspm findings doc count
+  passed_findings_count: AggregationsMultiBucketBase;
+  failed_findings_count: AggregationsMultiBucketBase;
+  benchmark_name: { top: BenchmarkName[] };
+  benchmark_version: { top: BenchmarkVersion[] };
+  cloud_provider: { top: CloudProvider[] };
+}
+
 export interface CspmRulesStats {
   account_id: string;
   rule_id: string;
@@ -86,4 +128,69 @@ export interface CloudSecurityInstallationStats {
   deployment_mode: string;
   created_at: string;
   agent_count: number;
+}
+
+export interface CloudProvider {
+  metrics: { 'cloud.provider': string };
+}
+export interface Value {
+  value: number;
+}
+
+export interface KubernetesVersion {
+  metrics: { 'cloudbeat.kubernetes.version': string };
+}
+
+export interface KspmAccountsResponse {
+  accounts: {
+    buckets: KspmAccountsEntity[];
+  };
+}
+export interface KspmAccountsEntity {
+  key: string; // cluster id
+  doc_count: number; // latest kspm findings doc count
+  passed_findings_count: AggregationsMultiBucketBase;
+  failed_findings_count: AggregationsMultiBucketBase;
+  benchmark_id: { top: BenchmarkId[] };
+  benchmark_name: { top: BenchmarkName[] };
+  benchmark_version: { top: BenchmarkVersion[] };
+  kubernetes_version: { top: KubernetesVersion[] };
+  agents_count: Value;
+  nodes_count: Value;
+  pods_count: Value;
+  resources: {
+    pods_count: Value;
+  };
+}
+
+export interface KspmAccountStats {
+  account_id: string;
+  posture_score: number;
+  doc_count: number;
+  benchmark_name: string;
+  benchmark_version: string;
+  kubernetes_version: string | null;
+  passed_findings_count: number;
+  failed_findings_count: number;
+  agents_count: number;
+  nodes_count: number;
+  pods_count: number;
+  cloud_provider: string;
+}
+
+export interface CnvmAccountsResponse {
+  accounts: {
+    buckets: CnvmAccountsEntity[];
+  };
+}
+export interface CnvmAccountsEntity {
+  key: string; // cluster id
+  doc_count: number; // latest cnvm vulnerabilities doc count,
+  cloud_provider: { top: CloudProvider[] };
+}
+
+export interface CnvmAccountStats {
+  account_id: string;
+  doc_count: number;
+  cloud_provider: string;
 }
