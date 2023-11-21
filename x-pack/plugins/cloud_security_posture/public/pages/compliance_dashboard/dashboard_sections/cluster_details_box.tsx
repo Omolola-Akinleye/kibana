@@ -19,16 +19,23 @@ import { FormattedMessage } from '@kbn/i18n-react';
 import moment from 'moment';
 import React from 'react';
 import { i18n } from '@kbn/i18n';
-import { getClusterIdQuery } from './benchmarks_section';
 import { CSPM_POLICY_TEMPLATE, INTERNAL_FEATURE_FLAGS } from '../../../../common/constants';
 import { Cluster } from '../../../../common/types';
-import { useNavigateFindings } from '../../../common/hooks/use_navigate_findings';
+import { NavFilter, useNavigateFindings } from '../../../common/hooks/use_navigate_findings';
 import { CISBenchmarkIcon } from '../../../components/cis_benchmark_icon';
 
 const defaultClusterTitle = i18n.translate(
   'xpack.csp.dashboard.benchmarkSection.defaultClusterTitle',
   { defaultMessage: 'ID' }
 );
+
+const getClusterIdQuery = (cluster: Cluster): NavFilter => {
+  if (cluster.meta.benchmark.posture_type === CSPM_POLICY_TEMPLATE) {
+    // TODO: remove assertion after typing CspFinding as discriminating union
+    return { 'cloud.account.id': cluster.meta.cloud!.account.id };
+  }
+  return { cluster_id: cluster.meta.assetIdentifierId };
+};
 
 const getClusterTitle = (cluster: Cluster) => {
   if (cluster.meta.benchmark.posture_type === CSPM_POLICY_TEMPLATE) {
