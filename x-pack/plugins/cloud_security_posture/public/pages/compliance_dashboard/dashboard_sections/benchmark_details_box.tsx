@@ -13,7 +13,6 @@ import {
   EuiText,
   EuiTitle,
   EuiToolTip,
-  useEuiTheme,
 } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n-react';
 import React from 'react';
@@ -24,7 +23,6 @@ import { useNavigateFindings } from '../../../common/hooks/use_navigate_findings
 import { CISBenchmarkIcon } from '../../../components/cis_benchmark_icon';
 import cisLogoIcon from '../../../assets/icons/cis_logo.svg';
 export const BenchmarkDetailsBox = ({ benchmark }: { benchmark: BenchmarkData }) => {
-  const { euiTheme } = useEuiTheme();
   const navToFindings = useNavigateFindings();
 
   const handleBenchmarkClick = () => {
