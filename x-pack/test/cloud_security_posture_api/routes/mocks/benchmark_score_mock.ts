@@ -5,10 +5,10 @@
  * 2.0.
  */
 
-export const benchmarkScoreMockData = [
+export const getBenchmarkScoreMockData = (postureType: string) => [
   {
     total_findings: 1,
-    policy_template: 'cspm',
+    policy_template: postureType,
     '@timestamp': '2023-11-22T16:10:55.229268215Z',
     score_by_cluster_id: {
       'Another Upper case account id': {
@@ -16,24 +16,22 @@ export const benchmarkScoreMockData = [
         passed_findings: 1,
         failed_findings: 0,
       },
+      'Upper case cluster id': {
+        total_findings: 1,
+        passed_findings: 1,
+        failed_findings: 0,
+      },
     },
     score_by_benchmark_id: {
-      cis_gcp: {
-        v2_0_0: {
-          total_findings: 1196,
-          passed_findings: 162,
-          failed_findings: 1034,
-        },
-      },
-      cis_azure: {
-        v2_0_0: {
-          total_findings: 132,
-          passed_findings: 68,
-          failed_findings: 64,
-        },
-      },
       cis_aws: {
         v1_5_0: {
+          total_findings: 1,
+          passed_findings: 1,
+          failed_findings: 0,
+        },
+      },
+      cis_k8s: {
+        v1_0_0: {
           total_findings: 1,
           passed_findings: 1,
           failed_findings: 0,
@@ -45,7 +43,7 @@ export const benchmarkScoreMockData = [
   },
 ];
 
-export const complianceDashboardDataMock = {
+export const cspmComplianceDashboardDataMock = {
   stats: {
     totalFailed: 0,
     totalPassed: 1,
@@ -121,6 +119,106 @@ export const complianceDashboardDataMock = {
       groupedFindingsEvaluation: [
         {
           name: 'Another upper case section',
+          totalFindings: 1,
+          totalFailed: 0,
+          totalPassed: 1,
+          postureScore: 100,
+        },
+      ],
+      trend: [
+        {
+          totalFindings: 1,
+          totalFailed: 0,
+          totalPassed: 1,
+          postureScore: 100,
+        },
+      ],
+    },
+  ],
+  trend: [
+    {
+      totalFindings: 1,
+      totalFailed: 0,
+      totalPassed: 1,
+      postureScore: 100,
+    },
+  ],
+};
+
+export const kspmComplianceDashboardDataMock = {
+  stats: {
+    totalFailed: 0,
+    totalPassed: 1,
+    totalFindings: 1,
+    postureScore: 100,
+    resourcesEvaluated: 1,
+  },
+  groupedFindingsEvaluation: [
+    {
+      name: 'Upper case section',
+      totalFindings: 1,
+      totalFailed: 0,
+      totalPassed: 1,
+      postureScore: 100,
+    },
+  ],
+  clusters: [
+    {
+      meta: {
+        clusterId: 'Upper case cluster id',
+        assetIdentifierId: 'Upper case cluster id',
+        benchmark: {
+          name: 'CIS Kubernetes V1.23',
+          id: 'cis_k8s',
+          posture_type: 'kspm',
+          version: 'v1.0.0',
+        },
+        cluster: {
+          id: 'Upper case cluster id',
+        },
+      },
+      stats: {
+        totalFailed: 0,
+        totalPassed: 1,
+        totalFindings: 1,
+        postureScore: 100,
+      },
+      groupedFindingsEvaluation: [
+        {
+          name: 'Upper case section',
+          totalFindings: 1,
+          totalFailed: 0,
+          totalPassed: 1,
+          postureScore: 100,
+        },
+      ],
+      trend: [
+        {
+          totalFindings: 1,
+          totalFailed: 0,
+          totalPassed: 1,
+          postureScore: 100,
+        },
+      ],
+    },
+  ],
+  benchmarks: [
+    {
+      meta: {
+        benchmarkId: 'cis_k8s',
+        benchmarkVersion: 'v1.0.0',
+        benchmarkName: 'CIS Kubernetes V1.23',
+        assetCount: 1,
+      },
+      stats: {
+        totalFailed: 0,
+        totalPassed: 1,
+        totalFindings: 1,
+        postureScore: 100,
+      },
+      groupedFindingsEvaluation: [
+        {
+          name: 'Upper case section',
           totalFindings: 1,
           totalFailed: 0,
           totalPassed: 1,
