@@ -7,7 +7,7 @@
 
 import React, { useMemo } from 'react';
 import useLocalStorage from 'react-use/lib/useLocalStorage';
-import type { EuiIconProps } from '@elastic/eui';
+import { EuiIconProps, EuiPanel } from '@elastic/eui';
 import { EuiFlexGroup, EuiFlexItem, EuiIcon, EuiTitle, useEuiTheme } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { css } from '@emotion/react';
@@ -98,11 +98,11 @@ export const BenchmarksSection = ({
   }, [complianceData.benchmarks, isBenchmarkSortingAsc]);
 
   return (
-    <>
+    <EuiPanel hasBorder>
       <EuiFlexGroup
         css={css`
-        border-bottom: ${euiTheme.border.thick};
-        border-bottom-color: ${euiTheme.colors.text};
+        border-bottom: ${euiTheme.border.thin};
+        border-bottom-color: ${euiTheme.colors.lightShade};
         padding-bottom: ${euiTheme.size.s};
         .euiTitle {
           font-weight: ${euiTheme.font.weight.semiBold};
@@ -157,8 +157,10 @@ export const BenchmarksSection = ({
           css={css`
             // card height with 3 items in risk table
             height: 200px;
-            border-bottom: ${euiTheme.border.thin};
             padding: ${euiTheme.size.base} 0 ${euiTheme.size.l};
+            &:not(:last-of-type) {
+              border-bottom: ${euiTheme.border.thin};
+            }
           `}
         >
           <EuiFlexItem grow={dashboardColumnsGrow.first}>
@@ -206,6 +208,6 @@ export const BenchmarksSection = ({
           </EuiFlexItem>
         </EuiFlexGroup>
       ))}
-    </>
+    </EuiPanel>
   );
 };

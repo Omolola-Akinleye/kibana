@@ -6,7 +6,13 @@
  */
 
 import React, { useMemo } from 'react';
-import { EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiFlexItemProps } from '@elastic/eui';
+import {
+  EuiButtonEmpty,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiFlexItemProps,
+  useEuiTheme,
+} from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import { css } from '@emotion/react';
 import { useCspIntegrationLink } from '../../../common/navigation/use_csp_integration_link';
@@ -58,6 +64,8 @@ export const SummarySection = ({
   const navToFindingsByResource = useNavigateFindingsByResource();
   const cspmIntegrationLink = useCspIntegrationLink(CSPM_POLICY_TEMPLATE);
   const kspmIntegrationLink = useCspIntegrationLink(KSPM_POLICY_TEMPLATE);
+
+  const { euiTheme } = useEuiTheme();
 
   const handleEvalCounterClick = (evaluation: Evaluation) => {
     navToFindings({ 'result.evaluation': evaluation, ...getPolicyTemplateQuery(dashboardType) });
@@ -142,12 +150,12 @@ export const SummarySection = ({
     ]
   );
 
-  const chartTitle = i18n.translate('xpack.csp.dashboard.summarySection.postureScorePanelTitle', {
-    defaultMessage: 'Overall {type} Posture Score',
-    values: {
-      type: dashboardType === KSPM_POLICY_TEMPLATE ? 'Kubernetes' : 'Cloud',
-    },
-  });
+  const chartTitle = i18n.translate(
+    'xpack.csp.dashboard.summarySection.complianceScorePanelTitle',
+    {
+      defaultMessage: 'Compliance Score',
+    }
+  );
 
   return (
     <EuiFlexGroup
@@ -183,6 +191,9 @@ export const SummarySection = ({
             'xpack.csp.dashboard.summarySection.complianceByCisSectionPanelTitle',
             { defaultMessage: 'Compliance By CIS Section' }
           )}
+          styles={{
+            padding: `${euiTheme.size.m} ${euiTheme.size.m} ${euiTheme.size.s} ${euiTheme.size.m}`,
+          }}
         >
           <RisksTable
             data={complianceData.groupedFindingsEvaluation}
