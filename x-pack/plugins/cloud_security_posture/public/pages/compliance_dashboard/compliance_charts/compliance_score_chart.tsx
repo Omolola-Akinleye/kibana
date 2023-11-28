@@ -30,6 +30,7 @@ import {
 import { FormattedDate, FormattedTime } from '@kbn/i18n-react';
 import moment from 'moment';
 import { i18n } from '@kbn/i18n';
+import { css } from '@emotion/react';
 import { DASHBOARD_COMPLIANCE_SCORE_CHART } from '../test_subjects';
 import { statusColors } from '../../../common/constants';
 import { RULE_FAILED, RULE_PASSED } from '../../../../common/constants';
@@ -175,9 +176,24 @@ const CounterButtonLink = ({
         {text}
       </EuiText>
 
-      <EuiLink color="text" onClick={onClick} css={{ display: 'flex' }}>
+      <EuiLink
+        color="text"
+        onClick={onClick}
+        css={css`
+          display: flex;
+          &:hover {
+            text-decoration: none;
+          }
+        `}
+      >
         <EuiText
           color={color}
+          css={css`
+            &:hover {
+              border-bottom: 2px solid ${color};
+              padding-bottom: 4px;
+            }
+          `}
           style={{ fontWeight: euiTheme.font.weight.medium, fontSize: '18px' }}
           size="s"
         >
