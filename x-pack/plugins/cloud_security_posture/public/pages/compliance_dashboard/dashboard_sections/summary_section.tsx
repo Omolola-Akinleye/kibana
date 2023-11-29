@@ -27,11 +27,7 @@ import type {
   PosturePolicyTemplate,
 } from '../../../../common/types';
 import { RisksTable } from '../compliance_charts/risks_table';
-import {
-  NavFilter,
-  useNavigateFindings,
-  useNavigateFindingsByResource,
-} from '../../../common/hooks/use_navigate_findings';
+import { NavFilter, useNavigateFindings } from '../../../common/hooks/use_navigate_findings';
 import {
   CSPM_POLICY_TEMPLATE,
   KSPM_POLICY_TEMPLATE,
@@ -61,7 +57,6 @@ export const SummarySection = ({
   complianceData: ComplianceDashboardData;
 }) => {
   const navToFindings = useNavigateFindings();
-  const navToFindingsByResource = useNavigateFindingsByResource();
   const cspmIntegrationLink = useCspIntegrationLink(CSPM_POLICY_TEMPLATE);
   const kspmIntegrationLink = useCspIntegrationLink(KSPM_POLICY_TEMPLATE);
 
@@ -129,7 +124,7 @@ export const SummarySection = ({
           <EuiButtonEmpty
             iconType="search"
             onClick={() => {
-              navToFindingsByResource(getPolicyTemplateQuery(dashboardType));
+              navToFindings(getPolicyTemplateQuery(dashboardType));
             }}
           >
             {i18n.translate(
@@ -146,7 +141,7 @@ export const SummarySection = ({
       cspmIntegrationLink,
       dashboardType,
       kspmIntegrationLink,
-      navToFindingsByResource,
+      navToFindings,
     ]
   );
 
