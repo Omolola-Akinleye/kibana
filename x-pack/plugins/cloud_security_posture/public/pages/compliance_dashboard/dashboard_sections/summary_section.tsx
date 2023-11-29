@@ -22,7 +22,7 @@ import { CompactFormattedNumber } from '../../../components/compact_formatted_nu
 import { ChartPanel } from '../../../components/chart_panel';
 import { ComplianceScoreChart } from '../compliance_charts/compliance_score_chart';
 import type {
-  ComplianceDashboardData,
+  ComplianceDashboardDataV2,
   Evaluation,
   PosturePolicyTemplate,
 } from '../../../../common/types';
@@ -54,7 +54,7 @@ export const SummarySection = ({
   complianceData,
 }: {
   dashboardType: PosturePolicyTemplate;
-  complianceData: ComplianceDashboardData;
+  complianceData: ComplianceDashboardDataV2;
 }) => {
   const navToFindings = useNavigateFindings();
   const cspmIntegrationLink = useCspIntegrationLink(CSPM_POLICY_TEMPLATE);
@@ -92,7 +92,7 @@ export const SummarySection = ({
                 'xpack.csp.dashboard.summarySection.counterCard.accountsEvaluatedDescription',
                 { defaultMessage: 'Accounts Evaluated' }
               ),
-        title: <AccountsEvaluatedWidget clusters={complianceData.clusters} />,
+        title: <AccountsEvaluatedWidget benchmarkAssets={complianceData.benchmarks} />,
         button: (
           <EuiButtonEmpty
             iconType="listAdd"
@@ -136,7 +136,7 @@ export const SummarySection = ({
       },
     ],
     [
-      complianceData.clusters,
+      complianceData.benchmarks,
       complianceData.stats.resourcesEvaluated,
       cspmIntegrationLink,
       dashboardType,

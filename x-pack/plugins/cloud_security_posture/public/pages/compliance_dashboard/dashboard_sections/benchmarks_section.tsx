@@ -14,7 +14,7 @@ import { css } from '@emotion/react';
 import { i18n } from '@kbn/i18n';
 import type {
   BenchmarkData,
-  ComplianceDashboardData,
+  ComplianceDashboardDataV2,
   Evaluation,
   PosturePolicyTemplate,
 } from '../../../../common/types';
@@ -43,7 +43,7 @@ export const BenchmarksSection = ({
   complianceData,
   dashboardType,
 }: {
-  complianceData: ComplianceDashboardData;
+  complianceData: ComplianceDashboardDataV2;
   dashboardType: PosturePolicyTemplate;
 }) => {
   const { euiTheme } = useEuiTheme();
