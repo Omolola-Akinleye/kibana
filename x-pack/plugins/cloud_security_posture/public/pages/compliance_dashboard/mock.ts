@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { BenchmarkData, Cluster, ComplianceDashboardData } from '../../../common/types';
+import { BenchmarkData, Cluster, ComplianceDashboardDataV2 } from '../../../common/types';
 
 export const getClusterMockData = (): Cluster => ({
   meta: {
@@ -190,7 +190,7 @@ export const getMockDashboardData = () => ({
   ...mockDashboardData,
 });
 
-export const mockDashboardData: ComplianceDashboardData = {
+export const mockDashboardData: ComplianceDashboardDataV2 = {
   stats: {
     totalFailed: 17,
     totalPassed: 155,
@@ -249,7 +249,6 @@ export const mockDashboardData: ComplianceDashboardData = {
       postureScore: 50.0,
     },
   ],
-  clusters: [getClusterMockData()],
   benchmarks: [getBenchmarkMockData()],
   trend: [
     {
