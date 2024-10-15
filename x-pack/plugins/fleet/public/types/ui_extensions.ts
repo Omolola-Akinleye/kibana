@@ -15,6 +15,7 @@ import type { PackagePolicyValidationResults } from '../services';
 import type {
   Agent,
   AgentPolicy,
+  NewAgentPolicy,
   NewPackagePolicy,
   PackageInfo,
   PackagePolicy,
@@ -45,6 +46,7 @@ export type PackagePolicyReplaceDefineStepExtensionComponentProps = (
   packageInfo: PackageInfo;
   isAgentlessEnabled?: boolean;
   handleSetupTechnologyChange?: (setupTechnology: SetupTechnology) => void;
+  updateNewAgentPolicy?: (newAgentPolicy: Partial<NewAgentPolicy>) => void;
 };
 
 /**

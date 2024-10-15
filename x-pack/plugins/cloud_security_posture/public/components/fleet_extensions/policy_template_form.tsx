@@ -669,6 +669,7 @@ export const CspPolicyTemplateForm = memo<PackagePolicyReplaceDefineStepExtensio
     packageInfo,
     handleSetupTechnologyChange,
     isAgentlessEnabled,
+    agentPolicies,
   }) => {
     const integrationParam = useParams<{ integration: CloudSecurityPolicyTemplate }>().integration;
     const integration = SUPPORTED_POLICY_TEMPLATES.includes(integrationParam)
@@ -710,7 +711,7 @@ export const CspPolicyTemplateForm = memo<PackagePolicyReplaceDefineStepExtensio
         'cloudbeat/cis_aws': {
           'aws.credentials.type': {
             value: isAgentless
-              ? AWS_CREDENTIALS_TYPE.DIRECT_ACCESS_KEYS
+              ? AWS_CREDENTIALS_TYPE.ASSUME_ROLE
               : AWS_CREDENTIALS_TYPE.CLOUD_FORMATION,
             type: 'text',
           },
