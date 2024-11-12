@@ -90,7 +90,7 @@ Utilize AWS CloudFormation (a built-in AWS tool) or a series of manual steps to 
       intro: (
         <FormattedMessage
           id="xpack.csp.agentlessForm.cloudFormation.guide.cloudConnectors.description"
-          defaultMessage="Cloud Connectors"
+          defaultMessage="An IAM role Amazon Resource Name (ARN) is an IAM identity that you can create in your AWS account. When creating an IAM role, users can define the role’s permissions. Roles do not have standard long-term credentials such as passwords or access keys."
           values={{
             learnMore: (
               <EuiLink
@@ -268,7 +268,7 @@ export const AwsCredentialsFormAgentless = ({
         info={
           <FormattedMessage
             id="xpack.csp.awsIntegration.gettingStarted.setupInfoContentAgentless"
-            defaultMessage="Utilize AWS Access Keys to set up and deploy CSPM for assessing your AWS environment's security posture. Refer to our {gettingStartedLink} guide for details."
+            defaultMessage="Utilize AWS Access Keys or Cloud Connector to set up and deploy CSPM for assessing your AWS environment's security posture. Refer to our {gettingStartedLink} guide for details."
             values={{
               gettingStartedLink: (
                 <EuiLink href={documentationLink} target="_blank">

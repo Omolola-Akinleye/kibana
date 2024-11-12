@@ -351,14 +351,15 @@ export const CreatePackagePolicySinglePage: CreatePackagePolicyParams = ({
     );
   }
   const { isAgentlessIntegration } = useAgentless();
-  const { handleSetupTechnologyChange, selectedSetupTechnology } = useSetupTechnology({
-    newAgentPolicy,
-    setNewAgentPolicy,
-    updateAgentPolicies,
-    setSelectedPolicyTab,
-    packageInfo,
-    packagePolicy,
-  });
+  const { handleSetupTechnologyChange, handleAgentFeaturesChange, selectedSetupTechnology } =
+    useSetupTechnology({
+      newAgentPolicy,
+      setNewAgentPolicy,
+      updateAgentPolicies,
+      setSelectedPolicyTab,
+      packageInfo,
+      packagePolicy,
+    });
 
   const replaceStepConfigurePackagePolicy =
     replaceDefineStepView && packageInfo?.name ? (
@@ -367,7 +368,6 @@ export const CreatePackagePolicySinglePage: CreatePackagePolicyParams = ({
       ) : (
         <ExtensionWrapper>
           <replaceDefineStepView.Component
-            updateNewAgentPolicy={updateNewAgentPolicy}
             agentPolicies={agentPolicies}
             packageInfo={packageInfo}
             newPolicy={packagePolicy}
@@ -375,6 +375,7 @@ export const CreatePackagePolicySinglePage: CreatePackagePolicyParams = ({
             validationResults={validationResults}
             isEditPage={false}
             handleSetupTechnologyChange={handleSetupTechnologyChange}
+            handleAgentFeaturesChange={handleAgentFeaturesChange}
             isAgentlessEnabled={isAgentlessIntegration(packageInfo)}
           />
         </ExtensionWrapper>

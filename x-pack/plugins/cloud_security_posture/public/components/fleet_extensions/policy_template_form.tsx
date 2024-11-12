@@ -52,6 +52,7 @@ import {
   type NewPackagePolicyPostureInput,
   POSTURE_NAMESPACE,
   POLICY_TEMPLATE_FORM_DTS,
+  getAgentFeatures,
 } from './utils';
 import {
   PolicyTemplateInfo,
@@ -668,8 +669,8 @@ export const CspPolicyTemplateForm = memo<PackagePolicyReplaceDefineStepExtensio
     isEditPage,
     packageInfo,
     handleSetupTechnologyChange,
+    handleAgentFeaturesChange,
     isAgentlessEnabled,
-    agentPolicies,
   }) => {
     const integrationParam = useParams<{ integration: CloudSecurityPolicyTemplate }>().integration;
     const integration = SUPPORTED_POLICY_TEMPLATES.includes(integrationParam)
@@ -683,12 +684,14 @@ export const CspPolicyTemplateForm = memo<PackagePolicyReplaceDefineStepExtensio
     const input = getSelectedOption(newPolicy.inputs, integration);
     const getIsSubscriptionValid = useIsSubscriptionStatusValid();
     const isSubscriptionValid = !!getIsSubscriptionValid.data;
-    const { isAgentlessAvailable, setupTechnology, updateSetupTechnology } = useSetupTechnology({
-      input,
-      isAgentlessEnabled,
-      handleSetupTechnologyChange,
-      isEditPage,
-    });
+    const { isAgentlessAvailable, setupTechnology, updateSetupTechnology, updateAgentFeatures } =
+      useSetupTechnology({
+        input,
+        isAgentlessEnabled,
+        handleSetupTechnologyChange,
+        handleAgentFeaturesChange,
+        isEditPage,
+      });
 
     const shouldRenderAgentlessSelector =
       (!isEditPage && isAgentlessAvailable) || (isEditPage && isAgentlessEnabled);
@@ -740,9 +743,15 @@ export const CspPolicyTemplateForm = memo<PackagePolicyReplaceDefineStepExtensio
 
     const updatePolicy = useCallback(
       (updatedPolicy: NewPackagePolicy) => {
+        const currentInput = updatedPolicy.inputs.find((i) => i.enabled === true);
+        const agentFeatures = getAgentFeatures(
+          currentInput?.streams?.[0].vars?.['aws.credentials.type']?.value,
+          setupTechnology === SetupTechnology.AGENTLESS
+        );
+        updateAgentFeatures(setupTechnology, agentFeatures);
         onChange({ isValid, updatedPolicy });
       },
-      [onChange, isValid]
+      [onChange, isValid, setupTechnology, updateAgentFeatures]
     );
 
     /**

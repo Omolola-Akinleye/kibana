@@ -110,6 +110,10 @@ export type CloudSecurityPolicyTemplate = (typeof SUPPORTED_POLICY_TEMPLATES)[nu
 export type PosturePolicyTemplate = Extract<CloudSecurityPolicyTemplate, 'kspm' | 'cspm'>;
 
 export type GetComplianceDashboardRequest = TypeOf<typeof getComplianceDashboardSchema>;
+export type CredentialsType = Extract<
+  AwsCredentialsType,
+  'direct_access_keys' | 'assume_role' | 'temporary_keys'
+>;
 
 // CNVM DASHBOARD
 

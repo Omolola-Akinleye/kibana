@@ -269,7 +269,7 @@ export const AwsCredentialsForm = ({
             label={i18n.translate('xpack.csp.awsIntegration.awsCredentialTypeSelectorLabel', {
               defaultMessage: 'Preferred manual method',
             })}
-            isEditPage={isEditPage}
+            disabled={disabled}
             options={getAwsCredentialsFormManualOptions()}
             type={awsCredentialsType}
             onChange={(optionId) => {

@@ -24,6 +24,7 @@ import {
   AGENTLESS_GLOBAL_TAG_NAME_ORGANIZATION,
   AGENTLESS_GLOBAL_TAG_NAME_DIVISION,
   AGENTLESS_GLOBAL_TAG_NAME_TEAM,
+  CLOUD_CONNECTOR_AGENT_FEATURE,
 } from '../../../../../../../../common/constants';
 import {
   isAgentlessIntegration as isAgentlessIntegrationFn,
@@ -110,6 +111,7 @@ export function useSetupTechnology({
       inactivity_timeout: 3600,
       supports_agentless: true,
       monitoring_enabled: ['logs', 'metrics'],
+      agent_features: [{ name: CLOUD_CONNECTOR_AGENT_FEATURE, enabled: true }],
     });
     return agentless;
   });
@@ -171,7 +173,6 @@ export function useSetupTechnology({
       if (!isAgentlessEnabled || setupTechnology === selectedSetupTechnology) {
         return;
       }
-
       if (setupTechnology === SetupTechnology.AGENTLESS) {
         if (isAgentlessApiEnabled) {
           const agentlessPolicy = {
@@ -214,8 +215,50 @@ export function useSetupTechnology({
     ]
   );
 
+  const handleAgentFeaturesChange = useCallback(
+    (
+      setupTechnology: SetupTechnology,
+      agentFeatures: Array<{ name: string; enabled: boolean }>
+    ) => {
+      const defaultAgentFeatures = [{ name: CLOUD_CONNECTOR_AGENT_FEATURE, enabled: false }];
+      if (!isAgentlessEnabled) {
+        return;
+      }
+      if (setupTechnology === SetupTechnology.AGENTLESS) {
+        if (isAgentlessApiEnabled) {
+          const agentlessPolicy = {
+            ...newAgentlessPolicy,
+            agent_features: agentFeatures,
+          } as NewAgentPolicy;
+
+          setNewAgentPolicy(agentlessPolicy);
+          setNewAgentlessPolicy(agentlessPolicy);
+        }
+      } else {
+        setNewAgentPolicy({
+          ...newAgentBasedPolicy.current,
+          supports_agentless: false,
+          agent_features: [
+            ...(newAgentBasedPolicy.current.agent_features || []),
+            ...defaultAgentFeatures,
+          ],
+        });
+
+        updateAgentPolicies([newAgentBasedPolicy.current] as AgentPolicy[]);
+      }
+    },
+    [
+      isAgentlessEnabled,
+      isAgentlessApiEnabled,
+      setNewAgentPolicy,
+      newAgentlessPolicy,
+      updateAgentPolicies,
+    ]
+  );
+
   return {
     handleSetupTechnologyChange,
+    handleAgentFeaturesChange,
     selectedSetupTechnology,
   };
 }

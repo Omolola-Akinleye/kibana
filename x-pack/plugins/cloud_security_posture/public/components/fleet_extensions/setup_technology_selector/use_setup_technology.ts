@@ -14,11 +14,16 @@ export const useSetupTechnology = ({
   input,
   isAgentlessEnabled,
   handleSetupTechnologyChange,
+  handleAgentFeaturesChange,
   isEditPage,
 }: {
   input: NewPackagePolicyInput;
   isAgentlessEnabled?: boolean;
   handleSetupTechnologyChange?: (value: SetupTechnology, policyTemplateName?: string) => void;
+  handleAgentFeaturesChange?: (
+    deploymentMode: SetupTechnology,
+    agentFeatures: Array<{ name: string; enabled: boolean }>
+  ) => void;
   isEditPage?: boolean;
 }) => {
   const isCspmAws = input.type === CLOUDBEAT_AWS;
@@ -38,10 +43,20 @@ export const useSetupTechnology = ({
     }
   };
 
+  const updateAgentFeatures = (
+    deploymentMode: SetupTechnology,
+    agentFeaturesList: Array<{ name: string; enabled: boolean }>
+  ) => {
+    if (handleAgentFeaturesChange) {
+      handleAgentFeaturesChange(deploymentMode, agentFeaturesList);
+    }
+  };
+
   return {
     isAgentlessAvailable,
     setupTechnology,
     setSetupTechnology,
     updateSetupTechnology,
+    updateAgentFeatures,
   };
 };

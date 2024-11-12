@@ -18,6 +18,7 @@ import merge from 'lodash/merge';
 import semverValid from 'semver/functions/valid';
 import semverCoerce from 'semver/functions/coerce';
 import semverLt from 'semver/functions/lt';
+import { CLOUD_CONNECTOR_AGENT_FEATURE } from '@kbn/fleet-plugin/common/constants/agent_policy';
 import {
   CLOUDBEAT_AWS,
   CLOUDBEAT_AZURE,
@@ -33,6 +34,7 @@ import type {
   AwsCredentialsType,
   PostureInput,
   CloudSecurityPolicyTemplate,
+  CredentialsType,
 } from '../../../common/types_old';
 import { cloudPostureIntegrations } from '../../common/constants';
 import { DEFAULT_EKS_VARS_GROUP } from './eks_credentials_form';
@@ -43,6 +45,7 @@ import {
 } from './aws_credentials_form/get_aws_credentials_form_options';
 import { GCP_CREDENTIALS_TYPE, GCP_SETUP_ACCESS } from './gcp_credentials_form/gcp_credential_form';
 import { AZURE_CREDENTIALS_TYPE } from './azure_credentials_form/azure_credentials_form';
+import { AWS_CREDENTIALS_TYPE } from './aws_credentials_form/aws_credentials_form';
 
 // Posture policies only support the default namespace
 export const POSTURE_NAMESPACE = 'default';
@@ -376,6 +379,26 @@ export const isBelowMinVersion = (version: string, minVersion: string) => {
   const semanticVersion = semverValid(version);
   const versionNumberOnly = semverCoerce(semanticVersion) || '';
   return semverLt(versionNumberOnly, minVersion);
+};
+
+export const getAgentFeatures = (
+  credentialsType: CredentialsType | undefined,
+  isAgentless: boolean
+) => {
+  const defaultAgentlesAgentFeatures = [
+    {
+      name: CLOUD_CONNECTOR_AGENT_FEATURE,
+      enabled: true,
+    },
+  ];
+  if (
+    (isAgentless && !credentialsType) ||
+    (isAgentless && credentialsType === AWS_CREDENTIALS_TYPE.ASSUME_ROLE)
+  ) {
+    return defaultAgentlesAgentFeatures;
+  }
+
+  return [{ name: CLOUD_CONNECTOR_AGENT_FEATURE, enabled: false }];
 };
 
 /**

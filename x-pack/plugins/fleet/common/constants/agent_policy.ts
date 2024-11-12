@@ -42,3 +42,5 @@ export const AGENTLESS_POLICY_ID = 'agentless'; // the policy id defined here: h
 
 export const AGENT_LOG_LEVELS = ['error', 'warning', 'info', 'debug'] as const;
 export const DEFAULT_LOG_LEVEL = 'info' as const;
+
+export const CLOUD_CONNECTOR_AGENT_FEATURE = 'supports_cloud_connectors';
