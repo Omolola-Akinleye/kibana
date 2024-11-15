@@ -18,7 +18,7 @@ import merge from 'lodash/merge';
 import semverValid from 'semver/functions/valid';
 import semverCoerce from 'semver/functions/coerce';
 import semverLt from 'semver/functions/lt';
-import { CLOUD_CONNECTOR_AGENT_FEATURE } from '@kbn/fleet-plugin/common/constants/agent_policy';
+
 import {
   CLOUDBEAT_AWS,
   CLOUDBEAT_AZURE,
@@ -232,6 +232,10 @@ export const getDefaultAwsCredentialsType = (
   return DEFAULT_MANUAL_AWS_CREDENTIALS_TYPE;
 };
 
+export const supportsCloudConnectors = (setupTechnology?: SetupTechnology): boolean => {
+  return (setupTechnology && setupTechnology === SetupTechnology.AGENTLESS) || false;
+};
+
 export const getDefaultAzureCredentialsType = (
   packageInfo: PackageInfo,
   setupTechnology?: SetupTechnology
@@ -305,6 +309,10 @@ export const getPostureInputHiddenVars = (
         'aws.credentials.type': {
           value: getDefaultAwsCredentialsType(packageInfo, setupTechnology),
           type: 'text',
+        },
+        supports_cloud_connectors: {
+          value: supportsCloudConnectors(setupTechnology),
+          type: 'boolean',
         },
       };
     case 'cloudbeat/cis_azure':
@@ -387,7 +395,7 @@ export const getAgentFeatures = (
 ) => {
   const defaultAgentlesAgentFeatures = [
     {
-      name: CLOUD_CONNECTOR_AGENT_FEATURE,
+      name: 'supports_cloud_connectors',
       enabled: true,
     },
   ];
@@ -398,7 +406,7 @@ export const getAgentFeatures = (
     return defaultAgentlesAgentFeatures;
   }
 
-  return [{ name: CLOUD_CONNECTOR_AGENT_FEATURE, enabled: false }];
+  return [{ name: 'supports_cloud_connectors', enabled: false }];
 };
 
 /**

@@ -21,7 +21,6 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import type { NewPackagePolicy } from '@kbn/fleet-plugin/public';
-import { SetupTechnology } from '@kbn/fleet-plugin/public';
 import { FormattedMessage } from '@kbn/i18n-react';
 import type {
   NewPackagePolicyInput,
@@ -31,6 +30,7 @@ import { PackageInfo, PackagePolicy } from '@kbn/fleet-plugin/common';
 import { CSPM_POLICY_TEMPLATE } from '@kbn/cloud-security-posture-common';
 import { useParams } from 'react-router-dom';
 import { i18n } from '@kbn/i18n';
+import { SetupTechnology } from '@kbn/fleet-plugin/public';
 import { useIsSubscriptionStatusValid } from '../../common/hooks/use_is_subscription_status_valid';
 import { SubscriptionNotAllowed } from '../subscription_not_allowed';
 import { CspRadioGroupProps, RadioGroup } from './csp_boxed_radio_group';
@@ -743,12 +743,16 @@ export const CspPolicyTemplateForm = memo<PackagePolicyReplaceDefineStepExtensio
 
     const updatePolicy = useCallback(
       (updatedPolicy: NewPackagePolicy) => {
-        const currentInput = updatedPolicy.inputs.find((i) => i.enabled === true);
-        const agentFeatures = getAgentFeatures(
-          currentInput?.streams?.[0].vars?.['aws.credentials.type']?.value,
-          setupTechnology === SetupTechnology.AGENTLESS
+        const currentInput = updatedPolicy.inputs.find(
+          (i) => i.enabled === true && i.type === 'cloudbeat/cis_aws'
         );
-        updateAgentFeatures(setupTechnology, agentFeatures);
+        if (currentInput) {
+          const agentFeatures = getAgentFeatures(
+            currentInput?.streams?.[0].vars?.['aws.credentials.type']?.value,
+            setupTechnology === SetupTechnology.AGENTLESS
+          );
+          updateAgentFeatures(setupTechnology, agentFeatures);
+        }
         onChange({ isValid, updatedPolicy });
       },
       [onChange, isValid, setupTechnology, updateAgentFeatures]
@@ -762,9 +766,12 @@ export const CspPolicyTemplateForm = memo<PackagePolicyReplaceDefineStepExtensio
       (inputType: PostureInput) => {
         const inputVars = getPostureInputHiddenVars(inputType, packageInfo, setupTechnology);
         const policy = getPosturePolicy(newPolicy, inputType, inputVars);
+        updateAgentFeatures(setupTechnology, [
+          { name: 'supports_cloud_connectors', enabled: false },
+        ]);
         updatePolicy(policy);
       },
-      [setupTechnology, packageInfo, newPolicy, updatePolicy]
+      [packageInfo, setupTechnology, newPolicy, updateAgentFeatures, updatePolicy]
     );
 
     // search for non null fields of the validation?.vars object

@@ -10,6 +10,7 @@ import { PackageInfo } from '@kbn/fleet-plugin/common';
 export const SUPPORTED_TEMPLATES_URL_FROM_PACKAGE_INFO_INPUT_VARS = {
   CLOUD_FORMATION: 'cloud_formation_template',
   CLOUD_FORMATION_CREDENTIALS: 'cloud_formation_credentials_template',
+  CLOUD_FORMATION_CLOUD_CONNECTORS: 'cloud_formation_cloud_connectors_template',
   ARM_TEMPLATE: 'arm_template_url',
   CLOUD_SHELL_URL: 'cloud_shell_url',
 };

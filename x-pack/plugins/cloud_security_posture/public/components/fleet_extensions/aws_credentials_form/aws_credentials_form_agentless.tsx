@@ -12,6 +12,7 @@ import semverCompare from 'semver/functions/compare';
 import semverValid from 'semver/functions/valid';
 import { i18n } from '@kbn/i18n';
 
+import { SetupTechnology } from '@kbn/fleet-plugin/public';
 import {
   getTemplateUrlFromPackageInfo,
   SUPPORTED_TEMPLATES_URL_FROM_PACKAGE_INFO_INPUT_VARS,
@@ -22,6 +23,7 @@ import {
   ORGANIZATION_ACCOUNT,
   SINGLE_ACCOUNT,
   TEMPLATE_URL_ACCOUNT_TYPE_ENV_VAR,
+  TEMPLATE_URL_ELASTIC_SERVICE_ID_ENV_VAR,
 } from '../../../../common/constants';
 import {
   getAwsCredentialsFormAgentlessOptions,
@@ -37,7 +39,8 @@ import {
   ReadDocumentation,
   AWS_CREDENTIALS_TYPE,
 } from './aws_credentials_form';
-
+import { AWS_CLOUD_FORMATION_ACCORDIAN_TEST_SUBJ } from '../../test_subjects';
+import { useKibana } from '../../../common/hooks/use_kibana';
 const CLOUD_FORMATION_EXTERNAL_DOC_URL =
   'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-whatis-howdoesitwork.html';
 
@@ -226,12 +229,15 @@ export const AwsCredentialsFormAgentless = ({
   packageInfo,
   updatePolicy,
   isEditPage,
+  setupTechnology,
 }: AwsFormProps) => {
   const awsCredentialsType = getAwsCredentialsType(input) || AWS_CREDENTIALS_TYPE.ASSUME_ROLE;
   const options = getAwsCredentialsFormOptions(true);
   const group = options[awsCredentialsType];
   const fields = getInputVarsFields(input, group.fields);
   const documentationLink = cspIntegrationDocsNavigation.cspm.awsGetStartedPath;
+  const { cloud } = useKibana().services;
+
   const accountType = input?.streams?.[0].vars?.['aws.account_type']?.value ?? SINGLE_ACCOUNT;
 
   const isValidSemantic = semverValid(packageInfo.version);
@@ -245,6 +251,21 @@ export const AwsCredentialsFormAgentless = ({
     SUPPORTED_TEMPLATES_URL_FROM_PACKAGE_INFO_INPUT_VARS.CLOUD_FORMATION_CREDENTIALS
   )?.replace(TEMPLATE_URL_ACCOUNT_TYPE_ENV_VAR, accountType);
 
+  // Elastic Service ID refers to the deployment ID or project ID
+  const elasticServiceId = cloud?.isCloudEnabled
+    ? cloud?.deploymentId
+    : cloud?.serverless.projectId;
+
+  const cloudConnectorRemoteRoleTemplate = elasticServiceId
+    ? getTemplateUrlFromPackageInfo(
+        packageInfo,
+        input.policy_template,
+        SUPPORTED_TEMPLATES_URL_FROM_PACKAGE_INFO_INPUT_VARS.CLOUD_FORMATION_CLOUD_CONNECTORS
+      )
+        ?.replace(TEMPLATE_URL_ACCOUNT_TYPE_ENV_VAR, accountType)
+        ?.replace(TEMPLATE_URL_ELASTIC_SERVICE_ID_ENV_VAR, elasticServiceId)
+    : undefined;
+
   const cloudFormationSettings = {
     [AWS_CREDENTIALS_TYPE.DIRECT_ACCESS_KEYS]: {
       accordianTitleLink: <EuiLink>Steps to Generate AWS Account Credentials</EuiLink>,
@@ -252,7 +273,7 @@ export const AwsCredentialsFormAgentless = ({
     },
     [AWS_CREDENTIALS_TYPE.ASSUME_ROLE]: {
       accordianTitleLink: <EuiLink>Steps to Generate ARN Role</EuiLink>,
-      templateUrl: automationCredentialTemplate,
+      templateUrl: cloudConnectorRemoteRoleTemplate,
     },
   };
 
@@ -291,9 +312,15 @@ export const AwsCredentialsFormAgentless = ({
         options={getAwsCredentialsFormAgentlessOptions(true)}
         disabled={!!isEditPage && awsCredentialsType === AWS_CREDENTIALS_TYPE.ASSUME_ROLE}
         onChange={(optionId) => {
+          const supportsCloudConnector =
+            setupTechnology === SetupTechnology.AGENTLESS &&
+            optionId === AWS_CREDENTIALS_TYPE.ASSUME_ROLE;
           updatePolicy(
             getPosturePolicy(newPolicy, input.type, {
               'aws.credentials.type': { value: optionId },
+              supports_cloud_connectors: {
+                value: supportsCloudConnector,
+              },
             })
           );
         }}
@@ -315,7 +342,7 @@ export const AwsCredentialsFormAgentless = ({
           <EuiSpacer size="m" />
           <EuiAccordion
             id="cloudFormationAccordianInstructions"
-            data-test-subj="launchGoogleCloudFormationAccordianInstructions"
+            data-test-subj={AWS_CLOUD_FORMATION_ACCORDIAN_TEST_SUBJ}
             buttonContent={cloudFormationSettings[awsCredentialsType].accordianTitleLink}
             paddingSize="l"
           >

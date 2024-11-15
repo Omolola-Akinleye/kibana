@@ -230,9 +230,9 @@ export function useSetupTechnology({
             ...newAgentlessPolicy,
             agent_features: agentFeatures,
           } as NewAgentPolicy;
-
           setNewAgentPolicy(agentlessPolicy);
           setNewAgentlessPolicy(agentlessPolicy);
+          updateAgentPolicies([agentlessPolicy] as AgentPolicy[]);
         }
       } else {
         setNewAgentPolicy({

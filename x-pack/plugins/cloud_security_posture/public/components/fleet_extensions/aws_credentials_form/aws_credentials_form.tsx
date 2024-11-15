@@ -15,7 +15,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import type { NewPackagePolicy } from '@kbn/fleet-plugin/public';
+import type { NewPackagePolicy, SetupTechnology } from '@kbn/fleet-plugin/public';
 import { NewPackagePolicyInput, PackageInfo } from '@kbn/fleet-plugin/common';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { css } from '@emotion/react';
@@ -98,6 +98,7 @@ export interface AwsFormProps {
   setIsValid: (isValid: boolean) => void;
   isEditPage?: boolean;
   disabled: boolean;
+  setupTechnology?: SetupTechnology;
 }
 
 const CloudFormationSetup = ({

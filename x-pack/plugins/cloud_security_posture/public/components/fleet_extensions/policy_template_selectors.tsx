@@ -95,7 +95,14 @@ export const PolicyTemplateVarsForm = ({
       return <EksCredentialsForm {...props} input={input} />;
     case 'cloudbeat/cis_aws':
       if (isAgentless) {
-        return <AwsCredentialsFormAgentless {...props} input={input} isEditPage={isEditPage} />;
+        return (
+          <AwsCredentialsFormAgentless
+            {...props}
+            setupTechnology={setupTechnology}
+            input={input}
+            isEditPage={isEditPage}
+          />
+        );
       }
 
       return <AwsCredentialsForm {...props} input={input} />;
