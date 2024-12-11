@@ -32,7 +32,10 @@
       "alerting",
       "features",
       "inference",
-      "logsDataAccess"
+      "logsDataAccess",
+      "spaces",
+      "slo",
+      "llmTasks"
     ],
     "optionalPlugins": [
       "cloud"

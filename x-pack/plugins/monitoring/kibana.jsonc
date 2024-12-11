@@ -18,14 +18,12 @@
       "features",
       "data",
       "navigation",
-      "observability",
-      "observabilityShared",
       "dataViews",
-      "unifiedSearch"
+      "unifiedSearch",
+      "share"
     ],
     "optionalPlugins": [
       "infra",
-      "logsShared",
       "usageCollection",
       "home",
       "cloud",
@@ -39,7 +37,7 @@
     "requiredBundles": [
       "kibanaUtils",
       "alerting",
-      "kibanaReact"
+      "kibanaReact",
     ]
   }
 }

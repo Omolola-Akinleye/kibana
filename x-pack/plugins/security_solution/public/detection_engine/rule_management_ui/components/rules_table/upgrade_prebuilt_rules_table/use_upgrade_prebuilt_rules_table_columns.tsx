@@ -59,7 +59,7 @@ const RULE_NAME_COLUMN: TableColumn = {
   field: 'current_rule.name',
   name: i18n.COLUMN_RULE,
   render: (value: RuleUpgradeState['current_rule']['name'], ruleUpgradeState: RuleUpgradeState) => (
-    <RuleName name={value} ruleId={ruleUpgradeState.id} />
+    <RuleName name={value} ruleId={ruleUpgradeState.rule_id} />
   ),
   sortable: true,
   truncateText: true,
@@ -160,15 +160,21 @@ const createUpgradeButtonColumn = (
       />
     );
 
+    const tooltipContent = isDisabledByConflicts
+      ? i18n.UPDATE_RULE_BUTTON_TOOLTIP_CONFLICTS
+      : undefined;
+
     return (
-      <EuiButtonEmpty
-        size="s"
-        disabled={isUpgradeButtonDisabled}
-        onClick={() => upgradeRules([ruleId])}
-        data-test-subj={`upgradeSinglePrebuiltRuleButton-${ruleId}`}
-      >
-        {isRuleUpgrading ? spinner : i18n.UPDATE_RULE_BUTTON}
-      </EuiButtonEmpty>
+      <EuiToolTip content={tooltipContent}>
+        <EuiButtonEmpty
+          size="s"
+          disabled={isUpgradeButtonDisabled}
+          onClick={() => upgradeRules([ruleId])}
+          data-test-subj={`upgradeSinglePrebuiltRuleButton-${ruleId}`}
+        >
+          {isRuleUpgrading ? spinner : i18n.UPDATE_RULE_BUTTON}
+        </EuiButtonEmpty>
+      </EuiToolTip>
     );
   },
   width: '10%',
