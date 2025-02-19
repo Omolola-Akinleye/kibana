@@ -5,36 +5,30 @@
  * 2.0.
  */
 
-/* eslint-disable @kbn/eslint/module_migration */
-
 import type {
-  EuiDataGridRefProps,
-  EuiDataGridColumn,
   EuiDataGridCellValueElementProps,
-  EuiDataGridStyle,
-  EuiDataGridToolBarVisibilityOptions,
+  EuiDataGridColumn,
   EuiDataGridControlColumn,
   EuiDataGridPaginationProps,
-  EuiDataGridRowHeightsOptions,
   EuiDataGridProps,
+  EuiDataGridRefProps,
+  EuiDataGridRowHeightsOptions,
+  EuiDataGridStyle,
+  EuiDataGridToolBarVisibilityOptions,
 } from '@elastic/eui';
 import { EuiDataGrid, EuiProgress } from '@elastic/eui';
 import { getOr } from 'lodash/fp';
 import memoizeOne from 'memoize-one';
-import React, { useCallback, useEffect, useMemo, useContext, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, ComponentType } from 'react';
 import { useDispatch } from 'react-redux';
 
 import styled, { ThemeContext } from 'styled-components';
 import type { EuiTheme } from '@kbn/kibana-react-plugin/common';
-import type {
-  FieldBrowserOptions,
-  FieldBrowserProps,
-} from '@kbn/triggers-actions-ui-plugin/public';
 import { i18n } from '@kbn/i18n';
 import {
   BrowserFields,
-  DeprecatedCellValueElementProps,
   ColumnHeaderOptions,
+  DeprecatedCellValueElementProps,
   DeprecatedRowRenderer,
   TimelineItem,
 } from '@kbn/timelines-plugin/common';
@@ -43,6 +37,7 @@ import {
   UseDataGridColumnsCellActionsProps,
 } from '@kbn/cell-actions';
 import { FieldSpec } from '@kbn/data-views-plugin/common';
+import { FieldBrowser, type FieldBrowserOptions } from '@kbn/response-ops-alerts-fields-browser';
 import { DataTableModel, DataTableState } from '../../store/data_table/types';
 
 import { getColumnHeader, getColumnHeaders } from './column_headers/helpers';
@@ -59,8 +54,6 @@ import { tableDefaults } from '../../store/data_table/defaults';
 const DATA_TABLE_ARIA_LABEL = i18n.translate('securitySolutionPackages.dataTable.ariaLabel', {
   defaultMessage: 'Alerts',
 });
-
-type GetFieldBrowser = (props: FieldBrowserProps) => void;
 
 type NonCustomizableGridProps =
   | 'id'
@@ -90,13 +83,12 @@ interface BaseDataTableProps {
   loadPage: (newActivePage: number) => void;
   renderCellValue: (props: DeprecatedCellValueElementProps) => React.ReactNode;
   rowRenderers: DeprecatedRowRenderer[];
-  hasCrudPermissions?: boolean;
   unitCountText: string;
   pagination: EuiDataGridPaginationProps & { pageSize: number };
   totalItems: number;
   rowHeightsOptions?: EuiDataGridRowHeightsOptions;
   isEventRenderedView?: boolean;
-  getFieldBrowser: GetFieldBrowser;
+  fieldsBrowserComponent?: ComponentType;
   getFieldSpec: (fieldName: string) => FieldSpec | undefined;
   cellActionsTriggerId?: string;
 }
@@ -105,12 +97,11 @@ export type DataTableProps = BaseDataTableProps & Omit<EuiDataGridProps, NonCust
 
 const ES_LIMIT_COUNT = 9999;
 
-const gridStyle = (isEventRenderedView: boolean | undefined = false): EuiDataGridStyle => ({
+const gridStyle: EuiDataGridStyle = {
   border: 'none',
   fontSize: 's',
   header: 'underline',
-  stripes: isEventRenderedView === true,
-});
+};
 
 const EuiDataGridContainer = styled.div<{ hideLastPage: boolean }>`
   ul.euiPagination__list {
@@ -118,19 +109,23 @@ const EuiDataGridContainer = styled.div<{ hideLastPage: boolean }>`
       ${({ hideLastPage }) => `${hideLastPage ? 'display:none' : ''}`};
     }
   }
+
   div .euiDataGridRowCell {
     display: flex;
     align-items: center;
   }
+
   div .euiDataGridRowCell > [data-focus-lock-disabled] {
     display: flex;
     align-items: center;
     flex-grow: 1;
     width: 100%;
   }
+
   div .euiDataGridRowCell__content {
     flex-grow: 1;
   }
+
   div .siemEventsTable__trSupplement--summary {
     display: block;
   }
@@ -138,8 +133,7 @@ const EuiDataGridContainer = styled.div<{ hideLastPage: boolean }>`
 
 const memoizedGetColumnHeaders: (
   headers: ColumnHeaderOptions[],
-  browserFields: BrowserFields,
-  isEventRenderedView: boolean
+  browserFields: BrowserFields
 ) => ColumnHeaderOptions[] = memoizeOne(getColumnHeaders);
 
 // eslint-disable-next-line react/display-name
@@ -150,7 +144,6 @@ export const DataTableComponent = React.memo<DataTableProps>(
     bulkActions = true,
     data,
     fieldBrowserOptions,
-    hasCrudPermissions,
     id,
     leadingControlColumns,
     loadPage,
@@ -161,7 +154,7 @@ export const DataTableComponent = React.memo<DataTableProps>(
     totalItems,
     rowHeightsOptions,
     isEventRenderedView = false,
-    getFieldBrowser,
+    fieldsBrowserComponent = FieldBrowser,
     getFieldSpec,
     cellActionsTriggerId,
     ...otherProps
@@ -179,8 +172,9 @@ export const DataTableComponent = React.memo<DataTableProps>(
       defaultColumns,
       dataViewId,
     } = dataTable;
+    const FieldsBrowserComponent = fieldsBrowserComponent;
 
-    const columnHeaders = memoizedGetColumnHeaders(columns, browserFields, isEventRenderedView);
+    const columnHeaders = memoizedGetColumnHeaders(columns, browserFields);
 
     const dataGridRef = useRef<EuiDataGridRefProps>(null);
 
@@ -191,10 +185,6 @@ export const DataTableComponent = React.memo<DataTableProps>(
     const theme: EuiTheme = useContext(ThemeContext);
 
     const showBulkActions = useMemo(() => {
-      if (!hasCrudPermissions) {
-        return false;
-      }
-
       if (selectedCount === 0 || !showCheckboxes) {
         return false;
       }
@@ -202,7 +192,7 @@ export const DataTableComponent = React.memo<DataTableProps>(
         return bulkActions;
       }
       return (bulkActions?.customBulkActions?.length || bulkActions?.alertStatusActions) ?? true;
-    }, [hasCrudPermissions, selectedCount, showCheckboxes, bulkActions]);
+    }, [selectedCount, showCheckboxes, bulkActions]);
 
     const onResetColumns = useCallback(() => {
       dispatch(dataTableActions.updateColumns({ id, columns: defaultColumns }));
@@ -239,22 +229,18 @@ export const DataTableComponent = React.memo<DataTableProps>(
                 {isLoading && <EuiProgress size="xs" position="absolute" color="accent" />}
                 <UnitCount data-test-subj="server-side-event-count">{unitCountText}</UnitCount>
                 {additionalControls ?? null}
-                {!isEventRenderedView ? (
-                  getFieldBrowser({
-                    browserFields,
-                    options: fieldBrowserOptions,
-                    columnIds: columnHeaders.map(({ id: columnId }) => columnId),
-                    onResetColumns,
-                    onToggleColumn,
-                  })
-                ) : (
-                  <></>
-                )}
+                <FieldsBrowserComponent
+                  browserFields={browserFields}
+                  options={fieldBrowserOptions}
+                  columnIds={columnHeaders.map(({ id: columnId }) => columnId)}
+                  onResetColumns={onResetColumns}
+                  onToggleColumn={onToggleColumn}
+                />
               </>
             ),
           },
         },
-        ...(showBulkActions || isEventRenderedView
+        ...(showBulkActions
           ? {
               showColumnSelector: false,
               showSortSelector: false,
@@ -271,8 +257,7 @@ export const DataTableComponent = React.memo<DataTableProps>(
         isLoading,
         unitCountText,
         additionalControls,
-        isEventRenderedView,
-        getFieldBrowser,
+        FieldsBrowserComponent,
         browserFields,
         fieldBrowserOptions,
         columnHeaders,
@@ -470,9 +455,9 @@ export const DataTableComponent = React.memo<DataTableProps>(
             id={'body-data-grid'}
             data-test-subj="body-data-grid"
             aria-label={DATA_TABLE_ARIA_LABEL}
-            columns={isEventRenderedView ? columnHeaders : columnsWithCellActions}
+            columns={columnsWithCellActions}
             columnVisibility={{ visibleColumns, setVisibleColumns: onSetVisibleColumns }}
-            gridStyle={gridStyle(isEventRenderedView)}
+            gridStyle={gridStyle}
             leadingControlColumns={leadingControlColumns}
             toolbarVisibility={toolbarVisibility}
             rowCount={totalItems}
@@ -481,7 +466,7 @@ export const DataTableComponent = React.memo<DataTableProps>(
             onColumnResize={onColumnResize}
             pagination={pagination}
             ref={dataGridRef}
-            rowHeightsOptions={rowHeightsOptions}
+            rowHeightsOptions={undefined}
           />
         </EuiDataGridContainer>
       </>

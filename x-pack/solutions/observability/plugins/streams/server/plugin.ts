@@ -22,6 +22,9 @@ import {
   StreamsPluginStartDependencies,
   StreamsServer,
 } from './types';
+import { AssetService } from './lib/streams/assets/asset_service';
+import { RouteHandlerScopedClients } from './routes/types';
+import { StreamsService } from './lib/streams/service';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface StreamsPluginSetup {}
@@ -45,31 +48,57 @@ export class StreamsPlugin
   public config: StreamsConfig;
   public logger: Logger;
   public server?: StreamsServer;
+  private isDev: boolean;
 
   constructor(context: PluginInitializerContext<StreamsConfig>) {
+    this.isDev = context.env.mode.dev;
     this.config = context.config.get();
     this.logger = context.logger.get();
   }
 
-  public setup(core: CoreSetup, plugins: StreamsPluginSetupDependencies): StreamsPluginSetup {
+  public setup(
+    core: CoreSetup<StreamsPluginStartDependencies>,
+    plugins: StreamsPluginSetupDependencies
+  ): StreamsPluginSetup {
     this.server = {
       config: this.config,
       logger: this.logger,
     } as StreamsServer;
 
+    const assetService = new AssetService(core, this.logger);
+    const streamsService = new StreamsService(core, this.logger);
+
     registerRoutes({
       repository: streamsRouteRepository,
       dependencies: {
+        assets: assetService,
         server: this.server,
-        getScopedClients: async ({ request }: { request: KibanaRequest }) => {
-          const [coreStart] = await core.getStartServices();
+        getScopedClients: async ({
+          request,
+        }: {
+          request: KibanaRequest;
+        }): Promise<RouteHandlerScopedClients> => {
+          const [coreStart, assetClient] = await Promise.all([
+            core.getStartServices().then(([_coreStart]) => _coreStart),
+            assetService.getClientWithRequest({ request }),
+          ]);
+
+          const streamsClient = await streamsService.getClientWithRequest({ request, assetClient });
+
           const scopedClusterClient = coreStart.elasticsearch.client.asScoped(request);
           const soClient = coreStart.savedObjects.getScopedClient(request);
-          return { scopedClusterClient, soClient };
+
+          return {
+            scopedClusterClient,
+            soClient,
+            assetClient,
+            streamsClient,
+          };
         },
       },
       core,
       logger: this.logger,
+      runDevModeChecks: this.isDev,
     });
 
     return {};

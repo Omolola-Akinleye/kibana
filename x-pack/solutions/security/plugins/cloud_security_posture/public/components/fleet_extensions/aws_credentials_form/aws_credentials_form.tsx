@@ -99,6 +99,7 @@ export interface AwsFormProps {
   isEditPage?: boolean;
   disabled: boolean;
   setupTechnology?: SetupTechnology;
+  hasInvalidRequiredVars: boolean;
 }
 
 const CloudFormationSetup = ({
@@ -212,6 +213,7 @@ export const AwsCredentialsForm = ({
   onChange,
   setIsValid,
   disabled,
+  hasInvalidRequiredVars,
 }: AwsFormProps) => {
   const {
     awsCredentialsType,
@@ -292,6 +294,7 @@ export const AwsCredentialsForm = ({
             onChange={(key, value) => {
               updatePolicy(getPosturePolicy(newPolicy, input.type, { [key]: { value } }));
             }}
+            hasInvalidRequiredVars={hasInvalidRequiredVars}
           />
         </>
       )}

@@ -230,6 +230,7 @@ export const AwsCredentialsFormAgentless = ({
   updatePolicy,
   isEditPage,
   setupTechnology,
+  hasInvalidRequiredVars,
 }: AwsFormProps) => {
   const awsCredentialsType = getAwsCredentialsType(input) || AWS_CREDENTIALS_TYPE.ASSUME_ROLE;
   const options = getAwsCredentialsFormOptions(true);
@@ -239,6 +240,18 @@ export const AwsCredentialsFormAgentless = ({
   const { cloud } = useKibana().services;
 
   const accountType = input?.streams?.[0].vars?.['aws.account_type']?.value ?? SINGLE_ACCOUNT;
+
+  // This should ony set the credentials after the initial render
+  if (!getAwsCredentialsType(input)) {
+    updatePolicy({
+      ...getPosturePolicy(newPolicy, input.type, {
+        'aws.credentials.type': {
+          value: awsCredentialsType,
+          type: 'text',
+        },
+      }),
+    });
+  }
 
   const isValidSemantic = semverValid(packageInfo.version);
   const showCloudCredentialsButton = isValidSemantic
@@ -373,6 +386,7 @@ export const AwsCredentialsFormAgentless = ({
         onChange={(key, value) => {
           updatePolicy(getPosturePolicy(newPolicy, input.type, { [key]: { value } }));
         }}
+        hasInvalidRequiredVars={hasInvalidRequiredVars}
       />
       <ReadDocumentation url={documentationLink} />
     </>

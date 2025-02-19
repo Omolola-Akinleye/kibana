@@ -72,7 +72,7 @@ export const register = (deps: RouteDependencies): void => {
         hasDeprecatedProxySetting: boolean
       ) => {
         try {
-          const body = serializeCluster({ name, hasDeprecatedProxySetting });
+          const body = serializeCluster({ name, hasDeprecatedProxySetting }, undefined, true);
 
           const updateClusterResponse = await clusterClient.asCurrentUser.cluster.putSettings({
             body,
@@ -140,6 +140,12 @@ export const register = (deps: RouteDependencies): void => {
   router.delete(
     {
       path: `${API_BASE_PATH}/{nameOrNames}`,
+      security: {
+        authz: {
+          enabled: false,
+          reason: 'Relies on es client for authorization',
+        },
+      },
       validate: {
         params: paramsValidation,
       },

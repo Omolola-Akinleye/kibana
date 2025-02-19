@@ -19,6 +19,8 @@ import semverValid from 'semver/functions/valid';
 import semverCoerce from 'semver/functions/coerce';
 import semverLt from 'semver/functions/lt';
 
+import { PackagePolicyValidationResults } from '@kbn/fleet-plugin/common/services';
+import { getFlattenedObject } from '@kbn/std';
 import {
   CLOUDBEAT_AWS,
   CLOUDBEAT_AZURE,
@@ -43,7 +45,7 @@ import {
   DEFAULT_AWS_CREDENTIALS_TYPE,
   DEFAULT_MANUAL_AWS_CREDENTIALS_TYPE,
 } from './aws_credentials_form/get_aws_credentials_form_options';
-import { GCP_CREDENTIALS_TYPE, GCP_SETUP_ACCESS } from './gcp_credentials_form/gcp_credential_form';
+import { GCP_CREDENTIALS_TYPE } from './gcp_credentials_form/gcp_credential_form';
 import { AZURE_CREDENTIALS_TYPE } from './azure_credentials_form/azure_credentials_form';
 import { AWS_CREDENTIALS_TYPE } from './aws_credentials_form/aws_credentials_form';
 
@@ -262,10 +264,6 @@ export const getDefaultGcpHiddenVars = (
         value: GCP_CREDENTIALS_TYPE.CREDENTIALS_JSON,
         type: 'text',
       },
-      setup_access: {
-        value: GCP_SETUP_ACCESS.MANUAL,
-        type: 'text',
-      },
     };
   }
 
@@ -276,20 +274,12 @@ export const getDefaultGcpHiddenVars = (
         value: GCP_CREDENTIALS_TYPE.CREDENTIALS_NONE,
         type: 'text',
       },
-      setup_access: {
-        value: GCP_SETUP_ACCESS.CLOUD_SHELL,
-        type: 'text',
-      },
     };
   }
 
   return {
     'gcp.credentials.type': {
       value: GCP_CREDENTIALS_TYPE.CREDENTIALS_FILE,
-      type: 'text',
-    },
-    setup_access: {
-      value: GCP_SETUP_ACCESS.MANUAL,
       type: 'text',
     },
   };
@@ -426,6 +416,17 @@ export const findVariableDef = (packageInfo: PackageInfo, key: string) => {
     .find((vars) => vars?.name === key);
 };
 
+export const fieldIsInvalid = (value: string | undefined, hasInvalidRequiredVars: boolean) =>
+  hasInvalidRequiredVars && !value;
+
 export const POLICY_TEMPLATE_FORM_DTS = {
   LOADER: 'policy-template-form-loader',
+};
+
+export const hasErrors = (validationResults: PackagePolicyValidationResults | undefined) => {
+  if (!validationResults) return 0;
+
+  const flattenedValidation = getFlattenedObject(validationResults);
+  const errors = Object.values(flattenedValidation).filter((value) => Boolean(value)) || [];
+  return errors.length;
 };

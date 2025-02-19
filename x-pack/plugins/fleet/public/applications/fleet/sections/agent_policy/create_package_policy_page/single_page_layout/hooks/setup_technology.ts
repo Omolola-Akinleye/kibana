@@ -200,15 +200,13 @@ export function useSetupTechnology({
         return;
       }
       if (setupTechnology === SetupTechnology.AGENTLESS) {
-        if (isAgentlessApiEnabled) {
-          const agentlessPolicy = {
-            ...newAgentlessPolicy,
-            agent_features: agentFeatures,
-          } as NewAgentPolicy;
-          setNewAgentPolicy(agentlessPolicy);
-          setNewAgentlessPolicy(agentlessPolicy);
-          updateAgentPolicies([agentlessPolicy] as AgentPolicy[]);
-        }
+        const agentlessPolicy = {
+          ...newAgentlessPolicy,
+          agent_features: agentFeatures,
+        } as NewAgentPolicy;
+        setNewAgentPolicy(agentlessPolicy);
+        setNewAgentlessPolicy(agentlessPolicy);
+        updateAgentPolicies([agentlessPolicy] as AgentPolicy[]);
       } else {
         setNewAgentPolicy({
           ...newAgentBasedPolicy.current,
@@ -222,13 +220,7 @@ export function useSetupTechnology({
         updateAgentPolicies([newAgentBasedPolicy.current] as AgentPolicy[]);
       }
     },
-    [
-      isAgentlessEnabled,
-      isAgentlessApiEnabled,
-      setNewAgentPolicy,
-      newAgentlessPolicy,
-      updateAgentPolicies,
-    ]
+    [isAgentlessEnabled, setNewAgentPolicy, newAgentlessPolicy, updateAgentPolicies]
   );
 
   return {
