@@ -95,6 +95,8 @@ export interface NewPackagePolicy {
   };
   overrides?: { inputs?: { [key: string]: any } } | null;
   supports_agentless?: boolean | null;
+  supports_cloud_connector?: boolean | null;
+  cloud_connector_id?: string | null;
   additional_datastreams_permissions?: string[];
 }
 

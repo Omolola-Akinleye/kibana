@@ -32,6 +32,7 @@ export interface CloudConnectorServiceInterface {
   ): Promise<CloudConnectorSO[]>;
 }
 
+
 export class CloudConnectorService implements CloudConnectorServiceInterface {
   private static readonly EXTERNAL_ID_REGEX = /^[a-zA-Z0-9]{20}$/;
 
@@ -52,7 +53,7 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
       logger.info('Creating cloud connector');
 
       // Extract cloud variables from package policy
-      const { cloudProvider, vars, name } = this.extractCloudVars(cloudConnector);
+      const { cloudProvider, vars, name } = this.getCloudConnectorInfo(cloudConnector);
 
       if (!vars || Object.keys(vars).length === 0) {
         logger.error(`Package policy must contain ${cloudProvider} input vars`);
@@ -130,7 +131,7 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
     }
   }
 
-  private extractCloudVars(cloudConnector: CreateCloudConnectorRequest): {
+  private getCloudConnectorInfo(cloudConnector: CreateCloudConnectorRequest): {
     cloudProvider: CloudProvider;
     vars: CloudConnectorVars;
     name: string;

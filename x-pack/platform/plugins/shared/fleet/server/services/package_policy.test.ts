@@ -443,6 +443,101 @@ describe('Package policy service', () => {
         id: 'b684f590-feeb-11ed-b202-b7f403f1dee9',
       });
     });
+
+    it('should handle cloud connector variables when supports_cloud_connector is true', async () => {
+      const esClient = elasticsearchServiceMock.createClusterClient().asInternalUser;
+      const soClient = createSavedObjectClientMock();
+
+      const packagePolicyWithCloudConnector = {
+        name: 'test-package-policy',
+        namespace: 'test',
+        enabled: true,
+        policy_id: 'test',
+        policy_ids: ['test'],
+        supports_cloud_connector: true,
+        inputs: [
+          {
+            type: 'aws',
+            enabled: true,
+            vars: {
+              'aws.role_arn': {
+                value: 'arn:aws:iam::123456789012:role/TestRole',
+                type: 'text',
+              },
+              'aws.credentials.external_id': {
+                value: {
+                  id: 'ABCDEFGHIJKLMNOPQRST',
+                  isSecretRef: true,
+                },
+                type: 'password',
+              },
+            },
+          },
+        ],
+      };
+
+      soClient.bulkCreate.mockResolvedValueOnce({
+        saved_objects: [
+          {
+            id: 'test-package-policy',
+            attributes: packagePolicyWithCloudConnector,
+            references: [],
+            type: LEGACY_PACKAGE_POLICY_SAVED_OBJECT_TYPE,
+          },
+        ],
+      });
+
+      mockAgentPolicyGet();
+
+      const result = await packagePolicyService.create(soClient, esClient, packagePolicyWithCloudConnector);
+
+      expect(result.supports_cloud_connector).toBe(true);
+      expect(result.inputs[0].vars).toHaveProperty('aws.role_arn');
+      expect(result.inputs[0].vars).toHaveProperty('aws.credentials.external_id');
+    });
+
+    it('should not process cloud connector variables when supports_cloud_connector is false', async () => {
+      const esClient = elasticsearchServiceMock.createClusterClient().asInternalUser;
+      const soClient = createSavedObjectClientMock();
+
+      const packagePolicyWithoutCloudConnector = {
+        name: 'test-package-policy',
+        namespace: 'test',
+        enabled: true,
+        policy_id: 'test',
+        policy_ids: ['test'],
+        supports_cloud_connector: false,
+        inputs: [
+          {
+            type: 'aws',
+            enabled: true,
+            vars: {
+              'aws.role_arn': {
+                value: 'arn:aws:iam::123456789012:role/TestRole',
+                type: 'text',
+              },
+            },
+          },
+        ],
+      };
+
+      soClient.bulkCreate.mockResolvedValueOnce({
+        saved_objects: [
+          {
+            id: 'test-package-policy',
+            attributes: packagePolicyWithoutCloudConnector,
+            references: [],
+            type: LEGACY_PACKAGE_POLICY_SAVED_OBJECT_TYPE,
+          },
+        ],
+      });
+
+      mockAgentPolicyGet();
+
+      const result = await packagePolicyService.create(soClient, esClient, packagePolicyWithoutCloudConnector);
+
+      expect(result.supports_cloud_connector).toBe(false);
+    });
   });
 
   describe('bulkCreate', () => {

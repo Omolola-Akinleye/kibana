@@ -93,6 +93,11 @@ async function createPackagePolicy(
   if (agentPolicy.supports_agentless) {
     newPackagePolicy.supports_agentless = agentPolicy.supports_agentless;
   }
+  
+  // Check if agent policy supports cloud connectors
+  if (agentPolicy.agentless?.cloud_connectors?.enabled) {
+    newPackagePolicy.supports_cloud_connector = true;
+  }
 
   await packagePolicyService.create(soClient, esClient, newPackagePolicy, {
     spaceId: options.spaceId,

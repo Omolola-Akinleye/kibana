@@ -76,6 +76,7 @@ import type {
   PolicySecretReference,
   AgentPolicy,
   PackagePolicyAssetsMap,
+  CloudConnectorVarsRecord,
 } from '../../common/types';
 import {
   FleetError,
@@ -124,7 +125,7 @@ import { getPackageInfo, ensureInstalledPackage, getInstallationObject } from '.
 import { getAssetsDataFromAssetsMap } from './epm/packages/assets';
 import { compileTemplate } from './epm/agent/agent';
 import { escapeSearchQueryPhrase, normalizeKuery } from './saved_object';
-import { appContextService } from '.';
+import { appContextService, cloudConnectorService } from '.';
 import { removeOldAssets } from './epm/packages/cleanup';
 import type { PackageUpdateEvent, UpdateEventType } from './upgrade_sender';
 import { sendTelemetryEvents } from './upgrade_sender';
@@ -232,6 +233,22 @@ export function _normalizePackagePolicyKuery(savedObjectType: string, kuery: str
     );
   }
 }
+
+export const extractCloudVarsFromPackagePolicy = (packagePolicy: NewPackagePolicy ):CloudConnectorVarsRecord| null => {
+  for (const input of packagePolicy.inputs) {
+    if (input.enabled && input.vars) {
+      const vars = input.vars;
+    return Object.entries(vars).filter(([key, _value]) => ['aws.credentials.external_id', 'aws.role_arn', 'external_id', 'role_arn'].includes(key)).
+     reduce((acc, [key, value]) => {
+      (acc)[key] = value;
+      return acc;
+     }, {} as CloudConnectorVarsRecord);
+
+    }
+  }
+  return null;
+}
+
 
 class PackagePolicyClientImpl implements PackagePolicyClient {
   protected getLogger(...childContextPaths: string[]): Logger {
@@ -419,6 +436,17 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
         secretReferences = secretsRes.secretReferences;
 
         inputs = enrichedPackagePolicy.inputs as PackagePolicyInput[];
+
+
+    const cloudConnectorVars = extractCloudVarsFromPackagePolicy(enrichedPackagePolicy);
+        if (cloudConnectorVars && enrichedPackagePolicy.supports_cloud_connector) {
+          try {
+          const cloudConnector = await cloudConnectorService.create(soClient, cloudConnectorVars);
+          enrichedPackagePolicy.cloud_connector_id = cloudConnector.id;
+          } catch (error) {
+            logger.error(`Error creating cloud connector: ${error}`);
+          }
+        }
       }
       const assetsMap = await getAgentTemplateAssetsMap({
         logger,
@@ -510,6 +538,7 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
 
     const createdPackagePolicy = mapPackagePolicySavedObjectToPackagePolicy(newSo);
     logger.debug(`Created new package policy with id ${newSo.id} and version ${newSo.version}`);
+
 
     return packagePolicyService.runExternalCallbacks(
       'packagePolicyPostCreate',

@@ -356,7 +356,7 @@ describe('CloudConnectorService', () => {
     });
   });
 
-  describe('extractCloudVars', () => {
+  describe('getCloudConnectorInfo', () => {
     it('should extract AWS variables correctly', () => {
       const request: CreateCloudConnectorRequest = {
         name: 'test-connector',
@@ -376,8 +376,8 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
-      const result = extractCloudVars(request);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
+      const result = getCloudConnectorInfo(request);
 
       expect(result).toEqual({
         cloudProvider: 'aws',
@@ -414,8 +414,8 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
-      const result = extractCloudVars(request);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
+      const result = getCloudConnectorInfo(request);
 
       expect(result.vars.external_id).toEqual({
         type: 'password',
@@ -445,8 +445,8 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
-      const result = extractCloudVars(request);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
+      const result = getCloudConnectorInfo(request);
 
       expect(result.vars.external_id).toEqual({
         type: 'password',
@@ -476,9 +476,9 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
 
-      expect(() => extractCloudVars(request)).toThrow(
+      expect(() => getCloudConnectorInfo(request)).toThrow(
         '[Cloud Connector API] External ID input var is not valid'
       );
     });
@@ -502,9 +502,9 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
 
-      expect(() => extractCloudVars(request)).toThrow(
+      expect(() => getCloudConnectorInfo(request)).toThrow(
         '[Cloud Connector API] External ID input var is not valid'
       );
     });
@@ -528,9 +528,9 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
 
-      expect(() => extractCloudVars(request)).toThrow(
+      expect(() => getCloudConnectorInfo(request)).toThrow(
         '[Cloud Connector API] External ID input var is not valid'
       );
     });
@@ -554,9 +554,9 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
 
-      expect(() => extractCloudVars(request)).toThrow(
+      expect(() => getCloudConnectorInfo(request)).toThrow(
         '[Cloud Connector API] External ID input var is not valid'
       );
     });
@@ -580,8 +580,8 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
-      const result = extractCloudVars(request);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
+      const result = getCloudConnectorInfo(request);
 
       expect(result.vars.external_id).toEqual({
         type: 'password',
@@ -611,8 +611,8 @@ describe('CloudConnectorService', () => {
         },
       };
 
-      const extractCloudVars = (service as any).extractCloudVars.bind(service);
-      const result = extractCloudVars(request);
+      const getCloudConnectorInfo = (service as any).getCloudConnectorInfo.bind(service);
+      const result = getCloudConnectorInfo(request);
 
       expect(result.vars.external_id).toEqual({
         type: 'password',

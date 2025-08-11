@@ -32,6 +32,8 @@ export interface CloudConnectorVars {
   tenant_id?: CloudConnectorSecretVar;
 }
 
+export type CloudConnectorVarsRecord = Record<string, PackagePolicyConfigRecordEntry | string | CloudConnectorSecretVar>;
+
 export interface CloudConnectorSO {
   id: string;
   name: string;
