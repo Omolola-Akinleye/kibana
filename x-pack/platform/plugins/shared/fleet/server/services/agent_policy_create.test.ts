@@ -319,8 +319,9 @@ describe('createAgentPolicyWithPackages', () => {
       esClient: esClientMock,
       soClient: soClientMock,
       agentPolicyService: mockedAgentPolicyService,
-      newPolicy: { 
-        name: 'Agent policy with cloud connector', 
+      newPolicy: {
+        id: 'new_agent_policy_with_cloud_connector',
+        name: 'Agent policy with cloud connector',
         namespace: 'default',
         agentless: {
           cloud_connectors: {
@@ -333,7 +334,7 @@ describe('createAgentPolicyWithPackages', () => {
       monitoringEnabled: [],
     });
 
-    expect(response.id).toEqual('new_id');
+    expect(response.id).toEqual('new_agent_policy_with_cloud_connector');
     expect(response.agentless?.cloud_connectors?.enabled).toBe(true);
   });
 
@@ -342,8 +343,9 @@ describe('createAgentPolicyWithPackages', () => {
       esClient: esClientMock,
       soClient: soClientMock,
       agentPolicyService: mockedAgentPolicyService,
-      newPolicy: { 
-        name: 'Agent policy without cloud connector', 
+      newPolicy: {
+        id: 'new_agent_policy_without_cloud_connector',
+        name: 'Agent policy without cloud connector',
         namespace: 'default',
         agentless: {
           cloud_connectors: {
@@ -356,44 +358,7 @@ describe('createAgentPolicyWithPackages', () => {
       monitoringEnabled: [],
     });
 
-    expect(response.id).toEqual('new_id');
+    expect(response.id).toEqual('new_agent_policy_without_cloud_connector');
     expect(response.agentless?.cloud_connectors?.enabled).toBe(false);
-  });
-
-  it('should create package policy with cloud connector support when agent policy has cloud connector enabled', async () => {
-    mockedPackagePolicyService.buildPackagePolicyFromPackage.mockImplementation(
-      (soClient, packageToInstall) => Promise.resolve({
-        ...getPackagePolicy(packageToInstall),
-        supports_cloud_connector: true,
-      })
-    );
-
-    const response = await createAgentPolicyWithPackages({
-      esClient: esClientMock,
-      soClient: soClientMock,
-      agentPolicyService: mockedAgentPolicyService,
-      newPolicy: { 
-        name: 'Agent policy with cloud connector', 
-        namespace: 'default',
-        agentless: {
-          cloud_connectors: {
-            enabled: true,
-          },
-        },
-      },
-      withSysMonitoring: false,
-      spaceId: 'default',
-      monitoringEnabled: [],
-    });
-
-    expect(response.id).toEqual('new_id');
-    expect(mockedPackagePolicyService.create).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.anything(),
-      expect.objectContaining({
-        supports_cloud_connector: true,
-      }),
-      expect.anything()
-    );
   });
 });

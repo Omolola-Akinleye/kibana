@@ -332,7 +332,7 @@ export default function (providerContext: FtrProviderContext) {
               external_id: {
                 type: 'password',
                 value: {
-                  id: 'test-external-id-12345678901234567890',
+                  id: 'aBcDeFg12JkLmNoPqRsT',
                   isSecretRef: true,
                 },
               },
@@ -343,13 +343,11 @@ export default function (providerContext: FtrProviderContext) {
       });
 
       it('should get list of cloud connectors', async () => {
-        const { body } = await supertest
-          .get(`/api/fleet/cloud_connectors`)
-          .expect(200);
+        const { body } = await supertest.get(`/api/fleet/cloud_connectors`).expect(200);
 
         expect(body).to.be.an('array');
         expect(body.length).to.be.greaterThan(0);
-        
+
         const connector = body.find((c: any) => c.id === createdConnectorId);
         expect(connector).to.be.an('object');
         expect(connector.name).to.equal('test-get-connector');
@@ -364,10 +362,8 @@ export default function (providerContext: FtrProviderContext) {
       it('should return empty array when no connectors exist', async () => {
         // Clean up existing connectors
         await kibanaServer.savedObjects.cleanStandardList();
-        
-        const { body } = await supertest
-          .get(`/api/fleet/cloud_connectors`)
-          .expect(200);
+
+        const { body } = await supertest.get(`/api/fleet/cloud_connectors`).expect(200);
 
         expect(body).to.be.an('array');
         expect(body.length).to.equal(0);
@@ -468,4 +464,4 @@ export default function (providerContext: FtrProviderContext) {
       });
     });
   });
-} 
+}

@@ -457,43 +457,49 @@ describe('Package policy service', () => {
         supports_cloud_connector: true,
         inputs: [
           {
-            type: 'aws',
+            type: 'cis_aws', // tcp input is in the blocklist for agentless
             enabled: true,
-            vars: {
-              'aws.role_arn': {
-                value: 'arn:aws:iam::123456789012:role/TestRole',
-                type: 'text',
-              },
-              'aws.credentials.external_id': {
-                value: {
-                  id: 'ABCDEFGHIJKLMNOPQRST',
-                  isSecretRef: true,
+            streams: [
+              {
+                enabled: true,
+                data_stream: { dataset: 'test', type: 'logs' },
+                vars: {
+                  role_arn: {
+                    value: 'arn:aws:iam::123456789012:role/TestRole',
+                    type: 'text',
+                  },
+                  external_id: {
+                    value: {
+                      id: 'ABCDEFGHIJKLMNOPQRST',
+                      isSecretRef: true,
+                    },
+                    type: 'password',
+                  },
                 },
-                type: 'password',
               },
-            },
+            ],
           },
         ],
       };
 
-      soClient.bulkCreate.mockResolvedValueOnce({
-        saved_objects: [
-          {
-            id: 'test-package-policy',
-            attributes: packagePolicyWithCloudConnector,
-            references: [],
-            type: LEGACY_PACKAGE_POLICY_SAVED_OBJECT_TYPE,
-          },
-        ],
+      soClient.create.mockResolvedValueOnce({
+        id: 'test-package-policy',
+        attributes: packagePolicyWithCloudConnector,
+        references: [],
+        type: PACKAGE_POLICY_SAVED_OBJECT_TYPE,
       });
 
       mockAgentPolicyGet();
 
-      const result = await packagePolicyService.create(soClient, esClient, packagePolicyWithCloudConnector);
+      const result = await packagePolicyService.create(
+        soClient,
+        esClient,
+        packagePolicyWithCloudConnector
+      );
 
       expect(result.supports_cloud_connector).toBe(true);
-      expect(result.inputs[0].vars).toHaveProperty('aws.role_arn');
-      expect(result.inputs[0].vars).toHaveProperty('aws.credentials.external_id');
+      expect(result.inputs[0].streams[0].vars).toHaveProperty('role_arn');
+      expect(result.inputs[0].streams[0].vars).toHaveProperty('external_id');
     });
 
     it('should not process cloud connector variables when supports_cloud_connector is false', async () => {
@@ -511,30 +517,36 @@ describe('Package policy service', () => {
           {
             type: 'aws',
             enabled: true,
-            vars: {
-              'aws.role_arn': {
-                value: 'arn:aws:iam::123456789012:role/TestRole',
-                type: 'text',
+            streams: [
+              {
+                enabled: true,
+                data_stream: { dataset: 'test', type: 'logs' },
+                vars: {
+                  role_arn: {
+                    value: 'arn:aws:iam::123456789012:role/TestRole',
+                    type: 'text',
+                  },
+                },
               },
-            },
+            ],
           },
         ],
       };
 
-      soClient.bulkCreate.mockResolvedValueOnce({
-        saved_objects: [
-          {
-            id: 'test-package-policy',
-            attributes: packagePolicyWithoutCloudConnector,
-            references: [],
-            type: LEGACY_PACKAGE_POLICY_SAVED_OBJECT_TYPE,
-          },
-        ],
+      soClient.create.mockResolvedValueOnce({
+        id: 'test-package-policy',
+        attributes: packagePolicyWithoutCloudConnector,
+        references: [],
+        type: PACKAGE_POLICY_SAVED_OBJECT_TYPE,
       });
 
       mockAgentPolicyGet();
 
-      const result = await packagePolicyService.create(soClient, esClient, packagePolicyWithoutCloudConnector);
+      const result = await packagePolicyService.create(
+        soClient,
+        esClient,
+        packagePolicyWithoutCloudConnector
+      );
 
       expect(result.supports_cloud_connector).toBe(false);
     });

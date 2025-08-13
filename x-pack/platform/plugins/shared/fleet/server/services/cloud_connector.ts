@@ -32,7 +32,6 @@ export interface CloudConnectorServiceInterface {
   ): Promise<CloudConnectorSO[]>;
 }
 
-
 export class CloudConnectorService implements CloudConnectorServiceInterface {
   private static readonly EXTERNAL_ID_REGEX = /^[a-zA-Z0-9]{20}$/;
 
@@ -140,7 +139,11 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
     const vars = cloudConnector.vars;
 
     if (cloudConnector.cloudProvider === 'aws') {
-      const roleArn = vars.role_arn?.value || vars['aws.role_arn']?.value;
+      const roleArn =
+        vars.role_arn?.value ||
+        vars['aws.role_arn']?.value ||
+        vars.role_arn?.length > 0 ||
+        vars['aws.role_arn']?.length > 0;
 
       if (!roleArn) {
         logger.error('AWS package policy must contain role_arn variable');
@@ -152,7 +155,7 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
         let externalId: CloudConnectorSecretVar | undefined;
 
         // Combined validation for external ID secret
-        const externalIdSecret =
+        const externalIdSecret: string =
           vars.external_id?.value?.id || vars.aws?.credentials.external_id?.value?.id;
         const isSecretRef =
           vars.external_id?.value?.isSecretRef ||
@@ -162,12 +165,12 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
           const isValid = CloudConnectorService.EXTERNAL_ID_REGEX.test(externalIdSecret);
           if (!isValid) {
             logger.error('External ID secret must be a 20-character alphanumeric string');
-            throw new Error('[Cloud Connector API] External ID input var is not valid');
+            throw new Error(`[Cloud Connector API] External ID input variable is not valid`);
           }
 
           externalId = vars.external_id?.value?.isSecretRef
             ? vars.external_id
-            : vars.aws?.credentials.external_id;
+            : vars.aws?.credentials?.external_id;
         }
 
         if (!externalId) {
@@ -178,12 +181,12 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
         }
 
         return {
+          name: cloudConnector.name,
           cloudProvider: cloudConnector.cloudProvider,
           vars: {
             role_arn: roleArn,
             external_id: externalId,
           },
-          name: cloudConnector.name,
         };
       }
     }

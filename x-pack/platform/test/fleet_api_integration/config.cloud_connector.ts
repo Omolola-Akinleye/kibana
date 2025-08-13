@@ -17,4 +17,4 @@ export default async function ({ readConfigFile }: FtrConfigProviderContext) {
       reportName: 'X-Pack Fleet Cloud Connector API Integration Tests',
     },
   };
-} 
+}
