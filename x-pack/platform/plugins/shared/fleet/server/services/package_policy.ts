@@ -59,6 +59,7 @@ import {
   DATA_STREAM_TYPE_VAR_NAME,
   OTEL_COLLECTOR_INPUT_TYPE,
 } from '../../common/constants';
+import { SUPPORTED_CLOUD_CONNECTOR_VARS } from '../../common/constants/cloud_connector';
 import type {
   PostDeletePackagePoliciesResponse,
   UpgradePackagePolicyResponse,
@@ -77,6 +78,7 @@ import type {
   AgentPolicy,
   PackagePolicyAssetsMap,
   CloudProvider,
+  CloudConnectorVarsRecord,
 } from '../../common/types';
 import {
   FleetError,
@@ -171,7 +173,6 @@ import {
   _packagePoliciesBulkUpgrade,
   _packagePoliciesUpgrade,
 } from './package_policies/upgrade';
-import { extractCloudVarsFromPackagePolicy } from './cloud_connector';
 
 export type InputsOverride = Partial<NewPackagePolicyInput> & {
   vars?: Array<NewPackagePolicyInput['vars'] & { name: string }>;
@@ -234,6 +235,25 @@ export function _normalizePackagePolicyKuery(savedObjectType: string, kuery: str
     );
   }
 }
+
+export const extractCloudVarsFromPackagePolicy = (
+  packagePolicy: NewPackagePolicy
+): CloudConnectorVarsRecord | null => {
+  for (const input of packagePolicy.inputs) {
+    if (input.enabled && input.streams.length > 0) {
+      const vars = input.streams.find((stream) => stream.enabled)?.vars;
+      if (vars) {
+        return Object.entries(vars)
+          .filter(([key, _value]) => SUPPORTED_CLOUD_CONNECTOR_VARS.includes(key))
+          .reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+          }, {} as CloudConnectorVarsRecord);
+      }
+    }
+  }
+  return null;
+};
 
 class PackagePolicyClientImpl implements PackagePolicyClient {
   protected getLogger(...childContextPaths: string[]): Logger {
@@ -420,10 +440,7 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
         secretReferences = secretsRes.secretReferences;
 
         inputs = enrichedPackagePolicy.inputs as PackagePolicyInput[];
-        if (
-          agentPolicies[0].agentless?.cloud_connectors?.enabled &&
-          enrichedPackagePolicy.package?.name !== 'system'
-        ) {
+        if (enrichedPackagePolicy.supports_cloud_connector) {
           const cloudConnectorVars = extractCloudVarsFromPackagePolicy(enrichedPackagePolicy);
           if (cloudConnectorVars) {
             try {
@@ -2155,6 +2172,7 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
           inputs: newPolicy.inputs[0]?.streams ? newPolicy.inputs : inputs,
           vars: newPolicy.vars || newPP.vars,
           supports_agentless: newPolicy.supports_agentless,
+          supports_cloud_connector: newPolicy.supports_cloud_connector,
           additional_datastreams_permissions: newPolicy.additional_datastreams_permissions,
         };
       }
