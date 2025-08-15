@@ -145,6 +145,7 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
 
     if (cloudConnector.cloudProvider === 'aws') {
       const roleArn = vars.role_arn?.value || vars[AWS_ROLE_ARN_VAR_NAME]?.value;
+      let name = cloudConnector.name;
 
       if (!roleArn) {
         logger.error('AWS package policy must contain role_arn variable');
@@ -154,6 +155,8 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
       // Check for AWS variables
       if (roleArn) {
         let externalId: CloudConnectorSecretVar | undefined;
+        name = roleArn?.value || roleArn;
+
         // Combined validation for external ID secret
         const externalIdSecret: string =
           vars.external_id?.value?.id || vars[AWS_CREDENTIALS_EXTERNAL_ID_VAR_NAME].value?.id;
@@ -181,7 +184,7 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
         }
 
         return {
-          name: cloudConnector.name,
+          name,
           cloudProvider: cloudConnector.cloudProvider,
           vars: {
             role_arn: roleArn,
