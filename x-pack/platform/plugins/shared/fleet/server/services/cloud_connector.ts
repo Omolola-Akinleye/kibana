@@ -19,6 +19,11 @@ import type { CloudConnectorSOAttributes } from '../types/so_attributes';
 import type { CreateCloudConnectorRequest } from '../routes/cloud_connector/handlers';
 import { CLOUD_CONNECTOR_SAVED_OBJECT_TYPE } from '../../common/constants';
 
+import {
+  AWS_CREDENTIALS_EXTERNAL_ID_VAR_NAME,
+  AWS_ROLE_ARN_VAR_NAME,
+} from '../../common/constants/cloud_connector';
+
 import { appContextService } from './app_context';
 
 export interface CloudConnectorServiceInterface {
@@ -139,11 +144,7 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
     const vars = cloudConnector.vars;
 
     if (cloudConnector.cloudProvider === 'aws') {
-      const roleArn =
-        vars.role_arn?.value ||
-        vars['aws.role_arn']?.value ||
-        vars.role_arn?.length > 0 ||
-        vars['aws.role_arn']?.length > 0;
+      const roleArn = vars.role_arn?.value || vars[AWS_ROLE_ARN_VAR_NAME]?.value;
 
       if (!roleArn) {
         logger.error('AWS package policy must contain role_arn variable');
@@ -153,13 +154,12 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
       // Check for AWS variables
       if (roleArn) {
         let externalId: CloudConnectorSecretVar | undefined;
-
         // Combined validation for external ID secret
         const externalIdSecret: string =
-          vars.external_id?.value?.id || vars.aws?.credentials.external_id?.value?.id;
+          vars.external_id?.value?.id || vars[AWS_CREDENTIALS_EXTERNAL_ID_VAR_NAME].value?.id;
         const isSecretRef =
           vars.external_id?.value?.isSecretRef ||
-          vars.aws?.credentials.external_id?.value?.isSecretRef;
+          vars[AWS_CREDENTIALS_EXTERNAL_ID_VAR_NAME].value?.isSecretRef;
 
         if (externalIdSecret && isSecretRef) {
           const isValid = CloudConnectorService.EXTERNAL_ID_REGEX.test(externalIdSecret);
@@ -170,7 +170,7 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
 
           externalId = vars.external_id?.value?.isSecretRef
             ? vars.external_id
-            : vars.aws?.credentials?.external_id;
+            : vars[AWS_CREDENTIALS_EXTERNAL_ID_VAR_NAME];
         }
 
         if (!externalId) {

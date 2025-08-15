@@ -182,6 +182,25 @@ export const PackagePolicyBaseSchema = {
       })
     )
   ),
+  supports_cloud_connector: schema.maybe(
+    schema.nullable(
+      schema.boolean({
+        defaultValue: false,
+        meta: {
+          description: 'Indicates whether the package policy supports cloud connectors.',
+        },
+      })
+    )
+  ),
+  cloud_connector_id: schema.maybe(
+    schema.nullable(
+      schema.string({
+        meta: {
+          description: 'ID of the cloud connector associated with this package policy.',
+        },
+      })
+    )
+  ),
   additional_datastreams_permissions: schema.maybe(
     schema.oneOf([
       schema.literal(null),

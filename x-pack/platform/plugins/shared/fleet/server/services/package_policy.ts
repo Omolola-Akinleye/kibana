@@ -76,7 +76,7 @@ import type {
   PolicySecretReference,
   AgentPolicy,
   PackagePolicyAssetsMap,
-  CloudConnectorVarsRecord,
+  CloudProvider,
 } from '../../common/types';
 import {
   FleetError,
@@ -171,6 +171,7 @@ import {
   _packagePoliciesBulkUpgrade,
   _packagePoliciesUpgrade,
 } from './package_policies/upgrade';
+import { extractCloudVarsFromPackagePolicy } from './cloud_connector';
 
 export type InputsOverride = Partial<NewPackagePolicyInput> & {
   vars?: Array<NewPackagePolicyInput['vars'] & { name: string }>;
@@ -233,22 +234,6 @@ export function _normalizePackagePolicyKuery(savedObjectType: string, kuery: str
     );
   }
 }
-
-export const extractCloudVarsFromPackagePolicy = (packagePolicy: NewPackagePolicy ):CloudConnectorVarsRecord| null => {
-  for (const input of packagePolicy.inputs) {
-    if (input.enabled && input.vars) {
-      const vars = input.vars;
-    return Object.entries(vars).filter(([key, _value]) => ['aws.credentials.external_id', 'aws.role_arn', 'external_id', 'role_arn'].includes(key)).
-     reduce((acc, [key, value]) => {
-      (acc)[key] = value;
-      return acc;
-     }, {} as CloudConnectorVarsRecord);
-
-    }
-  }
-  return null;
-}
-
 
 class PackagePolicyClientImpl implements PackagePolicyClient {
   protected getLogger(...childContextPaths: string[]): Logger {
@@ -318,7 +303,6 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
 
     this.keepPolicyIdInSync(packagePolicy);
     await preflightCheckPackagePolicy(soClient, packagePolicy, basePkgInfo);
-
     let enrichedPackagePolicy = await packagePolicyService.runExternalCallbacks(
       'packagePolicyCreate',
       packagePolicy,
@@ -436,15 +420,23 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
         secretReferences = secretsRes.secretReferences;
 
         inputs = enrichedPackagePolicy.inputs as PackagePolicyInput[];
-
-
-    const cloudConnectorVars = extractCloudVarsFromPackagePolicy(enrichedPackagePolicy);
-        if (cloudConnectorVars && enrichedPackagePolicy.supports_cloud_connector) {
-          try {
-          const cloudConnector = await cloudConnectorService.create(soClient, cloudConnectorVars);
-          enrichedPackagePolicy.cloud_connector_id = cloudConnector.id;
-          } catch (error) {
-            logger.error(`Error creating cloud connector: ${error}`);
+        if (
+          agentPolicies[0].agentless?.cloud_connectors?.enabled &&
+          enrichedPackagePolicy.package?.name !== 'system'
+        ) {
+          const cloudConnectorVars = extractCloudVarsFromPackagePolicy(enrichedPackagePolicy);
+          if (cloudConnectorVars) {
+            try {
+              const cloudConnector = await cloudConnectorService.create(soClient, {
+                name: enrichedPackagePolicy.name,
+                vars: cloudConnectorVars,
+                cloudProvider: agentPolicies[0].agentless?.cloud_connectors
+                  ?.target_csp as CloudProvider,
+              });
+              enrichedPackagePolicy.cloud_connector_id = cloudConnector.id;
+            } catch (error) {
+              logger.error(`Error creating cloud connector: ${error}`);
+            }
           }
         }
       }
@@ -538,7 +530,6 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
 
     const createdPackagePolicy = mapPackagePolicySavedObjectToPackagePolicy(newSo);
     logger.debug(`Created new package policy with id ${newSo.id} and version ${newSo.version}`);
-
 
     return packagePolicyService.runExternalCallbacks(
       'packagePolicyPostCreate',
