@@ -256,7 +256,7 @@ const CloudIntegrationSetup = memo<CloudIntegrationSetupProps>(
             isEditPage={isEditPage}
             setupTechnology={setupTechnology}
             hasInvalidRequiredVars={hasInvalidRequiredVars}
-            showCloudConnectors={showCloudConnectors}
+            showCloudConnectors={true}
             cloud={cloud}
           />
         )}
