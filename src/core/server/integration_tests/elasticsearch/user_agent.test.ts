@@ -1,20 +1,22 @@
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
- * or more contributor license agreements. Licensed under the Elastic License
- * 2.0 and the Server Side Public License, v 1; you may not use this file except
- * in compliance with, at your election, the Elastic License 2.0 or the Server
- * Side Public License, v 1.
+ * or more contributor license agreements. Licensed under the "Elastic License
+ * 2.0", the "GNU Affero General Public License v3.0 only", and the "Server Side
+ * Public License v 1"; you may not use this file except in compliance with, at
+ * your election, the "Elastic License 2.0", the "GNU Affero General Public
+ * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
 import { esTestConfig } from '@kbn/test';
 import * as http from 'http';
 import { loggerMock } from '@kbn/logging-mocks';
-import { Root } from '@kbn/core-root-server-internal';
+import type { Root } from '@kbn/core-root-server-internal';
 import {
   PRODUCT_RESPONSE_HEADER,
   USER_AGENT_HEADER,
   configureClient,
   AgentManager,
+  getRequestHandlerFactory,
 } from '@kbn/core-elasticsearch-client-server-internal';
 import { configSchema, ElasticsearchConfig } from '@kbn/core-elasticsearch-server-internal';
 
@@ -36,6 +38,7 @@ describe('ES Client - custom user-agent', () => {
 
   afterAll(async () => {
     try {
+      // @ts-expect-error upgrade typescript v5.9.3
       await kibanaServer?.shutdown();
     } catch (e) {
       // trap
@@ -62,6 +65,7 @@ describe('ES Client - custom user-agent', () => {
       logger,
       kibanaVersion,
       agentFactoryProvider,
+      onRequest: getRequestHandlerFactory(false)({ projectRouting: 'origin-only' }),
     });
 
     let userAgentHeader: string | undefined;
