@@ -20,14 +20,8 @@
         "description": [],
         "signature": [
           "(config: ",
-          {
-            "pluginId": "@kbn/core-elasticsearch-server",
-            "scope": "server",
-            "docId": "kibKbnCoreElasticsearchServerPluginApi",
-            "section": "def-server.ElasticsearchClientConfig",
-            "text": "ElasticsearchClientConfig"
-          },
-          ", { logger, type, scoped, getExecutionContext, agentFactoryProvider, kibanaVersion, }: { logger: ",
+          "ElasticsearchClientConfig",
+          ", { logger, type, scoped, getExecutionContext, agentFactoryProvider, kibanaVersion, onRequest, }: { logger: ",
           {
             "pluginId": "@kbn/logging",
             "scope": "common",
@@ -37,10 +31,14 @@
           },
           "; type: string; scoped?: boolean | undefined; getExecutionContext?: (() => string | undefined) | undefined; agentFactoryProvider: ",
           "AgentFactoryProvider",
-          "; kibanaVersion: string; }) => ",
+          "; kibanaVersion: string; onRequest: ",
+          "OnRequestHandler",
+          "; }) => ",
           "default"
         ],
-        "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+        "lineNumber": 24,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -52,15 +50,11 @@
             "label": "config",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-elasticsearch-server",
-                "scope": "server",
-                "docId": "kibKbnCoreElasticsearchServerPluginApi",
-                "section": "def-server.ElasticsearchClientConfig",
-                "text": "ElasticsearchClientConfig"
-              }
+              "ElasticsearchClientConfig"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+            "lineNumber": 25,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -70,9 +64,11 @@
             "id": "def-server.configureClient.$2",
             "type": "Object",
             "tags": [],
-            "label": "{\n    logger,\n    type,\n    scoped = false,\n    getExecutionContext = noop,\n    agentFactoryProvider,\n    kibanaVersion,\n  }",
+            "label": "{\n    logger,\n    type,\n    scoped = false,\n    getExecutionContext = noop,\n    agentFactoryProvider,\n    kibanaVersion,\n    onRequest,\n  }",
             "description": [],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+            "lineNumber": 34,
+            "columnNumber": 6,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -92,7 +88,9 @@
                     "text": "Logger"
                   }
                 ],
-                "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+                "lineNumber": 35,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -103,7 +101,9 @@
                 "tags": [],
                 "label": "type",
                 "description": [],
-                "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+                "lineNumber": 36,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -117,7 +117,9 @@
                 "signature": [
                   "boolean | undefined"
                 ],
-                "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+                "lineNumber": 37,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -131,7 +133,9 @@
                 "signature": [
                   "(() => string | undefined) | undefined"
                 ],
-                "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+                "lineNumber": 38,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [],
@@ -147,7 +151,9 @@
                 "signature": [
                   "AgentFactoryProvider"
                 ],
-                "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+                "lineNumber": 39,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -158,9 +164,248 @@
                 "tags": [],
                 "label": "kibanaVersion",
                 "description": [],
-                "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/configure_client.ts",
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+                "lineNumber": 40,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false
+              },
+              {
+                "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                "id": "def-server.configureClient.$2.onRequest",
+                "type": "Function",
+                "tags": [],
+                "label": "onRequest",
+                "description": [],
+                "signature": [
+                  "(ctx: ",
+                  "OnRequestContext",
+                  ", params: ",
+                  "TransportRequestParams",
+                  ", options: ",
+                  "TransportRequestOptions",
+                  ") => void"
+                ],
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/configure_client.ts",
+                "lineNumber": 41,
+                "columnNumber": 5,
+                "deprecated": false,
+                "trackAdoption": false,
+                "returnComment": [],
+                "children": [
+                  {
+                    "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                    "id": "def-server.configureClient.$2.onRequest.$1",
+                    "type": "Object",
+                    "tags": [],
+                    "label": "ctx",
+                    "description": [],
+                    "signature": [
+                      "OnRequestContext"
+                    ],
+                    "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                    "lineNumber": 31,
+                    "columnNumber": 3,
+                    "deprecated": false,
+                    "trackAdoption": false
+                  },
+                  {
+                    "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                    "id": "def-server.configureClient.$2.onRequest.$2",
+                    "type": "Object",
+                    "tags": [],
+                    "label": "params",
+                    "description": [],
+                    "signature": [
+                      "TransportRequestParams"
+                    ],
+                    "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                    "lineNumber": 32,
+                    "columnNumber": 3,
+                    "deprecated": false,
+                    "trackAdoption": false
+                  },
+                  {
+                    "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                    "id": "def-server.configureClient.$2.onRequest.$3",
+                    "type": "Object",
+                    "tags": [],
+                    "label": "options",
+                    "description": [],
+                    "signature": [
+                      "TransportRequestOptions"
+                    ],
+                    "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                    "lineNumber": 33,
+                    "columnNumber": 3,
+                    "deprecated": false,
+                    "trackAdoption": false
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "returnComment": [],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+        "id": "def-server.createTransport",
+        "type": "Function",
+        "tags": [],
+        "label": "createTransport",
+        "description": [],
+        "signature": [
+          "({ scoped, getExecutionContext, getUnauthorizedErrorHandler, onRequest, }: { scoped?: boolean | undefined; getExecutionContext?: (() => string | undefined) | undefined; getUnauthorizedErrorHandler?: ",
+          "ErrorHandlerAccessor",
+          " | undefined; onRequest: ",
+          "OnRequestHandler",
+          "; }) => typeof ",
+          "default"
+        ],
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+        "lineNumber": 39,
+        "columnNumber": 14,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+            "id": "def-server.createTransport.$1",
+            "type": "Object",
+            "tags": [],
+            "label": "{\n  scoped = false,\n  getExecutionContext = noop,\n  getUnauthorizedErrorHandler,\n  onRequest,\n}",
+            "description": [],
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+            "lineNumber": 44,
+            "columnNumber": 4,
+            "deprecated": false,
+            "trackAdoption": false,
+            "children": [
+              {
+                "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                "id": "def-server.createTransport.$1.scoped",
+                "type": "CompoundType",
+                "tags": [],
+                "label": "scoped",
+                "description": [],
+                "signature": [
+                  "boolean | undefined"
+                ],
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                "lineNumber": 45,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false
+              },
+              {
+                "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                "id": "def-server.createTransport.$1.getExecutionContext",
+                "type": "Function",
+                "tags": [],
+                "label": "getExecutionContext",
+                "description": [],
+                "signature": [
+                  "(() => string | undefined) | undefined"
+                ],
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                "lineNumber": 46,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false,
+                "children": [],
+                "returnComment": []
+              },
+              {
+                "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                "id": "def-server.createTransport.$1.getUnauthorizedErrorHandler",
+                "type": "Function",
+                "tags": [],
+                "label": "getUnauthorizedErrorHandler",
+                "description": [],
+                "signature": [
+                  "ErrorHandlerAccessor",
+                  " | undefined"
+                ],
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                "lineNumber": 47,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false
+              },
+              {
+                "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                "id": "def-server.createTransport.$1.onRequest",
+                "type": "Function",
+                "tags": [],
+                "label": "onRequest",
+                "description": [],
+                "signature": [
+                  "(ctx: ",
+                  "OnRequestContext",
+                  ", params: ",
+                  "TransportRequestParams",
+                  ", options: ",
+                  "TransportRequestOptions",
+                  ") => void"
+                ],
+                "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                "lineNumber": 48,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false,
+                "returnComment": [],
+                "children": [
+                  {
+                    "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                    "id": "def-server.createTransport.$1.onRequest.$1",
+                    "type": "Object",
+                    "tags": [],
+                    "label": "ctx",
+                    "description": [],
+                    "signature": [
+                      "OnRequestContext"
+                    ],
+                    "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                    "lineNumber": 31,
+                    "columnNumber": 3,
+                    "deprecated": false,
+                    "trackAdoption": false
+                  },
+                  {
+                    "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                    "id": "def-server.createTransport.$1.onRequest.$2",
+                    "type": "Object",
+                    "tags": [],
+                    "label": "params",
+                    "description": [],
+                    "signature": [
+                      "TransportRequestParams"
+                    ],
+                    "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                    "lineNumber": 32,
+                    "columnNumber": 3,
+                    "deprecated": false,
+                    "trackAdoption": false
+                  },
+                  {
+                    "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+                    "id": "def-server.createTransport.$1.onRequest.$3",
+                    "type": "Object",
+                    "tags": [],
+                    "label": "options",
+                    "description": [],
+                    "signature": [
+                      "TransportRequestOptions"
+                    ],
+                    "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+                    "lineNumber": 33,
+                    "columnNumber": 3,
+                    "deprecated": false,
+                    "trackAdoption": false
+                  }
+                ]
               }
             ]
           }
@@ -182,7 +427,9 @@
           "ElasticsearchClientError",
           ") => string"
         ],
-        "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+        "lineNumber": 89,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -196,7 +443,9 @@
             "signature": [
               "ElasticsearchClientError"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+            "lineNumber": 93,
+            "columnNumber": 33,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -218,23 +467,13 @@
           "(event: ",
           "DiagnosticResult",
           "<unknown, unknown>, apisToRedactInLogs: ",
-          {
-            "pluginId": "@kbn/core-elasticsearch-server",
-            "scope": "server",
-            "docId": "kibKbnCoreElasticsearchServerPluginApi",
-            "section": "def-server.ElasticsearchApiToRedactInLogs",
-            "text": "ElasticsearchApiToRedactInLogs"
-          },
+          "ElasticsearchApiToRedactInLogs",
           "[] | undefined) => ",
-          {
-            "pluginId": "@kbn/core-elasticsearch-client-server-internal",
-            "scope": "server",
-            "docId": "kibKbnCoreElasticsearchClientServerInternalPluginApi",
-            "section": "def-server.RequestDebugMeta",
-            "text": "RequestDebugMeta"
-          }
+          "RequestDebugMeta"
         ],
-        "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+        "lineNumber": 128,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -249,7 +488,9 @@
               "DiagnosticResult",
               "<unknown, unknown>"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+            "lineNumber": 133,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -262,16 +503,12 @@
             "label": "apisToRedactInLogs",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-elasticsearch-server",
-                "scope": "server",
-                "docId": "kibKbnCoreElasticsearchServerPluginApi",
-                "section": "def-server.ElasticsearchApiToRedactInLogs",
-                "text": "ElasticsearchApiToRedactInLogs"
-              },
+              "ElasticsearchApiToRedactInLogs",
               "[] | undefined"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+            "lineNumber": 134,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": false
@@ -291,7 +528,9 @@
         "description": [
           "\nExposes the APIs to fetch stats of the existing agents."
         ],
-        "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/agent_manager.ts",
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/agent_manager.ts",
+        "lineNumber": 36,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -306,19 +545,44 @@
             ],
             "signature": [
               "() => ",
-              {
-                "pluginId": "@kbn/core-metrics-server",
-                "scope": "server",
-                "docId": "kibKbnCoreMetricsServerPluginApi",
-                "section": "def-server.ElasticsearchClientsMetrics",
-                "text": "ElasticsearchClientsMetrics"
-              }
+              "ElasticsearchClientsMetrics"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/agent_manager.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/agent_manager.ts",
+            "lineNumber": 40,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [],
             "returnComment": []
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+        "id": "def-server.OnRequestContext",
+        "type": "Interface",
+        "tags": [],
+        "label": "OnRequestContext",
+        "description": [],
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+        "lineNumber": 26,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+            "id": "def-server.OnRequestContext.scoped",
+            "type": "boolean",
+            "tags": [],
+            "label": "scoped",
+            "description": [],
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+            "lineNumber": 27,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
           }
         ],
         "initialIsOpen": false
@@ -332,7 +596,9 @@
         "description": [
           "\nThe logger-relevant request meta of an ES request"
         ],
-        "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+        "lineNumber": 22,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -345,7 +611,9 @@
             "description": [
               "\nThe requested method"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -358,7 +626,9 @@
             "description": [
               "\nThe requested endpoint + querystring"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -371,7 +641,9 @@
             "description": [
               "\nThe request body (it may be redacted)"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+            "lineNumber": 34,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -387,7 +659,9 @@
             "signature": [
               "number | null"
             ],
-            "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/log_query_and_deprecation.ts",
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/log_query_and_deprecation.ts",
+            "lineNumber": 38,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -409,9 +683,85 @@
           " | ",
           "Agent"
         ],
-        "path": "packages/core/elasticsearch/core-elasticsearch-client-server-internal/src/agent_manager.ts",
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/agent_manager.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+        "id": "def-server.OnRequestHandler",
+        "type": "Type",
+        "tags": [],
+        "label": "OnRequestHandler",
+        "description": [],
+        "signature": [
+          "(ctx: ",
+          "OnRequestContext",
+          ", params: ",
+          "TransportRequestParams",
+          ", options: ",
+          "TransportRequestOptions",
+          ") => void"
+        ],
+        "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+        "lineNumber": 30,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "returnComment": [],
+        "children": [
+          {
+            "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+            "id": "def-server.OnRequestHandler.$1",
+            "type": "Object",
+            "tags": [],
+            "label": "ctx",
+            "description": [],
+            "signature": [
+              "OnRequestContext"
+            ],
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+            "lineNumber": 31,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+            "id": "def-server.OnRequestHandler.$2",
+            "type": "Object",
+            "tags": [],
+            "label": "params",
+            "description": [],
+            "signature": [
+              "TransportRequestParams"
+            ],
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+            "lineNumber": 32,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/core-elasticsearch-client-server-internal",
+            "id": "def-server.OnRequestHandler.$3",
+            "type": "Object",
+            "tags": [],
+            "label": "options",
+            "description": [],
+            "signature": [
+              "TransportRequestOptions"
+            ],
+            "path": "src/core/packages/elasticsearch/client-server-internal/src/create_transport.ts",
+            "lineNumber": 33,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
         "initialIsOpen": false
       }
     ],
