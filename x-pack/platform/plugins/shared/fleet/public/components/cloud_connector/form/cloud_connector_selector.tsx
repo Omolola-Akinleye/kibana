@@ -95,7 +95,9 @@ export const CloudConnectorSelector = ({
         inputDisplay: (
           <EuiFlexGroup gutterSize="s" alignItems="center" responsive={false}>
             <EuiFlexItem style={{ minWidth: 0 }}>
-              <EuiTextTruncate text={connector.name} />
+              <EuiToolTip content={connector.name} position="top" delay="long">
+                <EuiTextTruncate text={connector.name} />
+              </EuiToolTip>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <AccountBadge accountType={connector.accountType} />
@@ -129,13 +131,17 @@ export const CloudConnectorSelector = ({
               <EuiFlexGroup direction="column" gutterSize="none">
                 <EuiFlexItem>
                   <strong>
-                    <EuiTextTruncate text={connector.name} />
+                    <EuiToolTip content={connector.name} position="top" delay="long">
+                      <EuiTextTruncate text={connector.name} />
+                    </EuiToolTip>
                   </strong>
                 </EuiFlexItem>
                 {identifier && (
                   <EuiFlexItem>
                     <EuiText size="s" color="subdued">
-                      <EuiTextTruncate text={identifier} />
+                      <EuiToolTip content={identifier} position="top" delay="long">
+                        <EuiTextTruncate text={identifier} />
+                      </EuiToolTip>
                     </EuiText>
                   </EuiFlexItem>
                 )}

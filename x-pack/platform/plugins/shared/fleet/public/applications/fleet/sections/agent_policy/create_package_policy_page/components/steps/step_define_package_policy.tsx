@@ -300,23 +300,7 @@ export const StepDefinePackagePolicy: React.FunctionComponent<{
               </EuiFlexItem>
             ))}
 
-            {/* Cloud Connector Setup - shown when a cloud connector option is selected */}
-            {isCloudConnectorSelected && cloudProvider && (
-              <EuiFlexItem>
-                <CloudConnectorSetup
-                  newPolicy={packagePolicy}
-                  packageInfo={packageInfo}
-                  updatePolicy={handleCloudConnectorUpdate}
-                  isEditPage={isEditPage}
-                  hasInvalidRequiredVars={submitAttempted && !!validationResults?.vars}
-                  cloud={cloud}
-                  cloudProvider={cloudProvider}
-                  templateName={packageInfo.name}
-                  iacTemplateUrl={iacTemplateUrl}
-                  accountType="single-account"
-                />
-              </EuiFlexItem>
-            )}
+            {/* Cloud Connector Setup placeholder - actual component rendered outside for full width */}
 
             {/* Required vars */}
             {requiredVars.map((varDef) => {
@@ -575,6 +559,22 @@ export const StepDefinePackagePolicy: React.FunctionComponent<{
             ) : null}
           </EuiFlexGroup>
         </FormGroupResponsiveFields>
+
+        {/* Cloud Connector Setup - rendered outside FormGroupResponsiveFields for full width */}
+        {isCloudConnectorSelected && cloudProvider && (
+          <CloudConnectorSetup
+            newPolicy={packagePolicy}
+            packageInfo={packageInfo}
+            updatePolicy={handleCloudConnectorUpdate}
+            isEditPage={isEditPage}
+            hasInvalidRequiredVars={submitAttempted && !!validationResults?.vars}
+            cloud={cloud}
+            cloudProvider={cloudProvider}
+            templateName={packageInfo.name}
+            iacTemplateUrl={iacTemplateUrl}
+            accountType="single-account"
+          />
+        )}
       </>
     ) : (
       <Loading />
