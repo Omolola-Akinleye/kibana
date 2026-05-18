@@ -40841,6 +40841,55 @@ paths:
                           type: object
                         verification_failed_at:
                           type: string
+                        verification_permissions:
+                          items:
+                            additionalProperties: false
+                            type: object
+                            properties:
+                              last_verified_at:
+                                type: string
+                              package_name:
+                                type: string
+                              package_policy_id:
+                                type: string
+                              permissions:
+                                items:
+                                  additionalProperties: false
+                                  type: object
+                                  properties:
+                                    action:
+                                      type: string
+                                    error_code:
+                                      type: string
+                                    message:
+                                      type: string
+                                    required:
+                                      type: boolean
+                                    status:
+                                      enum:
+                                        - verified
+                                        - required
+                                        - denied
+                                        - error
+                                        - skipped
+                                      type: string
+                                  required:
+                                    - action
+                                    - status
+                                    - required
+                                type: array
+                              policy_id:
+                                type: string
+                              policy_template:
+                                type: string
+                            required:
+                              - package_policy_id
+                              - policy_id
+                              - policy_template
+                              - package_name
+                              - last_verified_at
+                              - permissions
+                          type: array
                         verification_started_at:
                           type: string
                         verification_status:
@@ -41030,6 +41079,55 @@ paths:
                         type: object
                       verification_failed_at:
                         type: string
+                      verification_permissions:
+                        items:
+                          additionalProperties: false
+                          type: object
+                          properties:
+                            last_verified_at:
+                              type: string
+                            package_name:
+                              type: string
+                            package_policy_id:
+                              type: string
+                            permissions:
+                              items:
+                                additionalProperties: false
+                                type: object
+                                properties:
+                                  action:
+                                    type: string
+                                  error_code:
+                                    type: string
+                                  message:
+                                    type: string
+                                  required:
+                                    type: boolean
+                                  status:
+                                    enum:
+                                      - verified
+                                      - required
+                                      - denied
+                                      - error
+                                      - skipped
+                                    type: string
+                                required:
+                                  - action
+                                  - status
+                                  - required
+                              type: array
+                            policy_id:
+                              type: string
+                            policy_template:
+                              type: string
+                          required:
+                            - package_policy_id
+                            - policy_id
+                            - policy_template
+                            - package_name
+                            - last_verified_at
+                            - permissions
+                        type: array
                       verification_started_at:
                         type: string
                       verification_status:
@@ -41230,6 +41328,55 @@ paths:
                         type: object
                       verification_failed_at:
                         type: string
+                      verification_permissions:
+                        items:
+                          additionalProperties: false
+                          type: object
+                          properties:
+                            last_verified_at:
+                              type: string
+                            package_name:
+                              type: string
+                            package_policy_id:
+                              type: string
+                            permissions:
+                              items:
+                                additionalProperties: false
+                                type: object
+                                properties:
+                                  action:
+                                    type: string
+                                  error_code:
+                                    type: string
+                                  message:
+                                    type: string
+                                  required:
+                                    type: boolean
+                                  status:
+                                    enum:
+                                      - verified
+                                      - required
+                                      - denied
+                                      - error
+                                      - skipped
+                                    type: string
+                                required:
+                                  - action
+                                  - status
+                                  - required
+                              type: array
+                            policy_id:
+                              type: string
+                            policy_template:
+                              type: string
+                          required:
+                            - package_policy_id
+                            - policy_id
+                            - policy_template
+                            - package_name
+                            - last_verified_at
+                            - permissions
+                        type: array
                       verification_started_at:
                         type: string
                       verification_status:
@@ -41410,6 +41557,55 @@ paths:
                         type: object
                       verification_failed_at:
                         type: string
+                      verification_permissions:
+                        items:
+                          additionalProperties: false
+                          type: object
+                          properties:
+                            last_verified_at:
+                              type: string
+                            package_name:
+                              type: string
+                            package_policy_id:
+                              type: string
+                            permissions:
+                              items:
+                                additionalProperties: false
+                                type: object
+                                properties:
+                                  action:
+                                    type: string
+                                  error_code:
+                                    type: string
+                                  message:
+                                    type: string
+                                  required:
+                                    type: boolean
+                                  status:
+                                    enum:
+                                      - verified
+                                      - required
+                                      - denied
+                                      - error
+                                      - skipped
+                                    type: string
+                                required:
+                                  - action
+                                  - status
+                                  - required
+                              type: array
+                            policy_id:
+                              type: string
+                            policy_template:
+                              type: string
+                          required:
+                            - package_policy_id
+                            - policy_id
+                            - policy_template
+                            - package_name
+                            - last_verified_at
+                            - permissions
+                        type: array
                       verification_started_at:
                         type: string
                       verification_status:
@@ -41484,15 +41680,13 @@ paths:
           name: page
           required: false
           schema:
-            minimum: 1
-            type: number
+            type: string
         - description: The number of items per page.
           in: query
           name: perPage
           required: false
           schema:
-            minimum: 1
-            type: number
+            type: string
       responses:
         '200':
           content:
